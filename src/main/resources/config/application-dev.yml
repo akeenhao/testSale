@@ -37,9 +37,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:oracle:thin:@localhost:1521:xe
-    username: system
-    password: oracle
+    url: jdbc:oracle:thin:@10.8.1.120:1521:orcl
+    username: bpm
+    password: bpm
     hikari:
       poolName: Hikari
       auto-commit: false

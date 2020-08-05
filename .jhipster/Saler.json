@@ -1,0 +1,25 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "test",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "saleName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "pic",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20200805123021",
+  "dto": "mapstruct",
+  "searchEngine": false,
+  "service": "serviceImpl",
+  "entityTableName": "saler",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "test"
+}
