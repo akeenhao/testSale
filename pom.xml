@@ -99,6 +99,15 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/cn.easyproject/orai18n -->
+        <dependency>
+            <groupId>cn.easyproject</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>12.1.0.2.0</version>
+        </dependency>
+
+
         <dependency>
             <groupId>io.github.jhipster</groupId>
             <artifactId>jhipster-framework</artifactId>
@@ -644,6 +653,9 @@
                             <artifactId>javassist</artifactId>
                             <version>${javassist.version}</version>
                         </dependency>
+
+
+
                     </dependencies>
                 </plugin>
                 <plugin>
