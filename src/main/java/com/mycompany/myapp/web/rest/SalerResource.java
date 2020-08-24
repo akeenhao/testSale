@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.service.SalerService;
+import com.mycompany.myapp.service.util.PaymentService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.service.dto.SalerDTO;
 
@@ -9,6 +10,7 @@ import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -38,6 +42,10 @@ public class SalerResource {
     private String applicationName;
 
     private final SalerService salerService;
+
+
+    @Autowired
+    PaymentService paymentService;
 
     public SalerResource(SalerService salerService) {
         this.salerService = salerService;
@@ -122,4 +130,16 @@ public class SalerResource {
         salerService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
+
+
+
+    @GetMapping("/pay")
+    public  void pay(Pageable pageable) throws UnsupportedEncodingException {
+
+        String remoteAddr = "";
+        String orderNumber = "test123";
+        String openid = "test";
+        paymentService.getPayConfig(remoteAddr,orderNumber,openid);
+    }
+
 }
