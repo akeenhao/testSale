@@ -38,7 +38,7 @@ public class PaymentService {
      */
     public Map<String, Object> getPayConfig(String remoteAddr, String orderNumber, String openid) throws UnsupportedEncodingException {
 
-        String appid = "wxd678efh567hg6787";
+        String appid = "wx145b7612e19e2bb8";
         String mchid = "1230000109";//商户id
         String mchKey = "123";//密钥串
         String payUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
