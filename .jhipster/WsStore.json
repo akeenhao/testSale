@@ -1,0 +1,61 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "test",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "personName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "balance",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "picture",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "totalOrderNum",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "point",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "openTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "areaId",
+      "fieldType": "Long"
+    }
+  ],
+  "changelogDate": "20200915022620",
+  "dto": "mapstruct",
+  "searchEngine": false,
+  "service": "serviceImpl",
+  "entityTableName": "ws_store",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "test"
+}

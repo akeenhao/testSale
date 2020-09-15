@@ -1,0 +1,49 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "test",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "picture",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "storeId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "unit",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "remark",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "totalSalesNum",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "point",
+      "fieldType": "Integer"
+    }
+  ],
+  "changelogDate": "20200915023047",
+  "dto": "mapstruct",
+  "searchEngine": false,
+  "service": "serviceImpl",
+  "entityTableName": "ws_product",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "test"
+}
