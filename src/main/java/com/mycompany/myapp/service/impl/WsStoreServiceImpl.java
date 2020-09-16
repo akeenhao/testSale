@@ -1,13 +1,16 @@
 package com.mycompany.myapp.service.impl;
 
+import com.mycompany.myapp.service.WsAreaService;
 import com.mycompany.myapp.service.WsStoreService;
 import com.mycompany.myapp.domain.WsStore;
 import com.mycompany.myapp.repository.WsStoreRepository;
+import com.mycompany.myapp.service.dto.WsAreaDTO;
 import com.mycompany.myapp.service.dto.WsStoreDTO;
 import com.mycompany.myapp.service.mapper.WsStoreMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,8 @@ public class WsStoreServiceImpl implements WsStoreService {
 
     private final Logger log = LoggerFactory.getLogger(WsStoreServiceImpl.class);
 
+    @Autowired
+    public WsAreaService wsAreaService;
     private final WsStoreRepository wsStoreRepository;
 
     private final WsStoreMapper wsStoreMapper;
@@ -45,8 +50,13 @@ public class WsStoreServiceImpl implements WsStoreService {
     @Transactional(readOnly = true)
     public Page<WsStoreDTO> findAll(Pageable pageable) {
         log.debug("Request to get all WsStores");
-        return wsStoreRepository.findAll(pageable)
-            .map(wsStoreMapper::toDto);
+        Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAll(pageable).map(wsStoreMapper::toDto);
+
+        wsStoreDTOPage.getContent().forEach(e -> {
+            Optional<WsAreaDTO> wsAreaDTO = wsAreaService.findOne(e.getAreaId());
+            e.setAreaName(wsAreaDTO.isPresent()?wsAreaDTO.get().getName():"");
+        });
+        return wsStoreDTOPage;
     }
 
 

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * A DTO for the {@link com.mycompany.myapp.domain.WsStore} entity.
  */
 public class WsStoreDTO implements Serializable {
-    
+
     private Long id;
 
     private String name;
@@ -33,7 +33,16 @@ public class WsStoreDTO implements Serializable {
 
     private Long areaId;
 
-    
+    private String areaName;
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
     public Long getId() {
         return id;
     }
