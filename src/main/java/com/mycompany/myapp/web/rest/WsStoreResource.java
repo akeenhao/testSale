@@ -97,6 +97,14 @@ public class WsStoreResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/ws-stores-byAreaId/{areaId}")
+    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(Pageable pageable,@PathVariable Long areaId) {
+        log.debug("REST request to get a page of WsStores");
+        Page<WsStoreDTO> page = wsStoreService.findAll(areaId,pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
     /**
      * {@code GET  /ws-stores/:id} : get the "id" wsStore.
      *

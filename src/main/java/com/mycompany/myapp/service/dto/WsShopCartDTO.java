@@ -6,12 +6,14 @@ import java.io.Serializable;
  * A DTO for the {@link com.mycompany.myapp.domain.WsShopCart} entity.
  */
 public class WsShopCartDTO implements Serializable {
-    
+
     private Long id;
 
     private Long buyerId;
+    private String buyerName;
 
     private Long productId;
+    private String productName;
 
     private Float num;
 
@@ -19,7 +21,22 @@ public class WsShopCartDTO implements Serializable {
 
     private Boolean status;
 
-    
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     public Long getId() {
         return id;
     }

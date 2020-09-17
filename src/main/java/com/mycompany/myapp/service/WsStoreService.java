@@ -28,6 +28,8 @@ public interface WsStoreService {
      */
     Page<WsStoreDTO> findAll(Pageable pageable);
 
+    Page<WsStoreDTO> findAll(Long areaId, Pageable pageable);
+
 
     /**
      * Get the "id" wsStore.

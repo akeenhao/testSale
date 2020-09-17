@@ -3,11 +3,14 @@ package com.mycompany.myapp.service.impl;
 import com.mycompany.myapp.service.WsProductService;
 import com.mycompany.myapp.domain.WsProduct;
 import com.mycompany.myapp.repository.WsProductRepository;
+import com.mycompany.myapp.service.WsStoreService;
 import com.mycompany.myapp.service.dto.WsProductDTO;
+import com.mycompany.myapp.service.dto.WsStoreDTO;
 import com.mycompany.myapp.service.mapper.WsProductMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,9 @@ public class WsProductServiceImpl implements WsProductService {
 
     private final WsProductMapper wsProductMapper;
 
+    @Autowired
+    WsStoreService wsStoreService;
+
     public WsProductServiceImpl(WsProductRepository wsProductRepository, WsProductMapper wsProductMapper) {
         this.wsProductRepository = wsProductRepository;
         this.wsProductMapper = wsProductMapper;
@@ -45,8 +51,32 @@ public class WsProductServiceImpl implements WsProductService {
     @Transactional(readOnly = true)
     public Page<WsProductDTO> findAll(Pageable pageable) {
         log.debug("Request to get all WsProducts");
-        return wsProductRepository.findAll(pageable)
+        Page<WsProductDTO> wsProductDTOPage = wsProductRepository.findAll(pageable)
             .map(wsProductMapper::toDto);
+
+        setStoreName(wsProductDTOPage);
+
+        return wsProductDTOPage;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsProductDTO> findAll(Long storeId, Pageable pageable) {
+        log.debug("Request to get all WsProducts");
+        Page<WsProductDTO> wsProductDTOPage = wsProductRepository.findAllByStoreId(storeId, pageable)
+            .map(wsProductMapper::toDto);
+        setStoreName(wsProductDTOPage);
+
+        return wsProductDTOPage;
+    }
+
+    private void setStoreName(Page<WsProductDTO> wsProductDTOPage) {
+        wsProductDTOPage.getContent().forEach(e -> {
+            Optional<WsStoreDTO> wsStoreDTO = wsStoreService.findOne(e.getStoreId());
+            if (wsStoreDTO.isPresent()) {
+                e.setStoreName(wsStoreDTO.get().getName());
+            }
+        });
     }
 
 

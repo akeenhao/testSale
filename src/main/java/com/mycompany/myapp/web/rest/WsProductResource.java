@@ -97,6 +97,14 @@ public class WsProductResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/ws-products-byStoreId/{storeId}")
+    public ResponseEntity<Page<WsProductDTO>> getAllWsProductsByStoreId(@PathVariable Long storeId, Pageable pageable) {
+        log.debug("REST request to get a page of WsProducts");
+        Page<WsProductDTO> page = wsProductService.findAll(storeId,pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
     /**
      * {@code GET  /ws-products/:id} : get the "id" wsProduct.
      *

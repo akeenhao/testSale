@@ -6,7 +6,7 @@ import java.io.Serializable;
  * A DTO for the {@link com.mycompany.myapp.domain.WsProduct} entity.
  */
 public class WsProductDTO implements Serializable {
-    
+
     private Long id;
 
     private String name;
@@ -14,6 +14,8 @@ public class WsProductDTO implements Serializable {
     private String picture;
 
     private Long storeId;
+
+    private String storeName;
 
     private Float price;
 
@@ -25,7 +27,14 @@ public class WsProductDTO implements Serializable {
 
     private Integer point;
 
-    
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
     public Long getId() {
         return id;
     }

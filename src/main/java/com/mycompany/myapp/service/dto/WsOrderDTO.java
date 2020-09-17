@@ -6,10 +6,11 @@ import java.io.Serializable;
  * A DTO for the {@link com.mycompany.myapp.domain.WsOrder} entity.
  */
 public class WsOrderDTO implements Serializable {
-    
+
     private Long id;
 
     private Long buyerId;
+    private String buyerName;
 
     private Long parkerId;
 
@@ -17,7 +18,14 @@ public class WsOrderDTO implements Serializable {
 
     private String status;
 
-    
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
     public Long getId() {
         return id;
     }

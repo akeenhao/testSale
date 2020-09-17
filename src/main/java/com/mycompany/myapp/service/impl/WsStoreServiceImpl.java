@@ -52,11 +52,25 @@ public class WsStoreServiceImpl implements WsStoreService {
         log.debug("Request to get all WsStores");
         Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAll(pageable).map(wsStoreMapper::toDto);
 
+        setAreaName(wsStoreDTOPage);
+        return wsStoreDTOPage;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsStoreDTO> findAll(Long areaId, Pageable pageable) {
+        log.debug("Request to get all WsStores");
+        Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAllByAreaId(areaId, pageable).map(wsStoreMapper::toDto);
+
+        setAreaName(wsStoreDTOPage);
+        return wsStoreDTOPage;
+    }
+
+    private void setAreaName(Page<WsStoreDTO> wsStoreDTOPage) {
         wsStoreDTOPage.getContent().forEach(e -> {
             Optional<WsAreaDTO> wsAreaDTO = wsAreaService.findOne(e.getAreaId());
-            e.setAreaName(wsAreaDTO.isPresent()?wsAreaDTO.get().getName():"");
+            e.setAreaName(wsAreaDTO.isPresent() ? wsAreaDTO.get().getName() : "");
         });
-        return wsStoreDTOPage;
     }
 
 
