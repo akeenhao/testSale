@@ -18,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link WsOrderDetails}.
@@ -80,5 +82,17 @@ public class WsOrderDetailsServiceImpl implements WsOrderDetailsService {
     public void delete(Long id) {
         log.debug("Request to delete WsOrderDetails : {}", id);
         wsOrderDetailsRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteByOrderId(Long id) {
+        log.debug("Request to deleteByOrderId WsOrderDetails : {}", id);
+        wsOrderDetailsRepository.deleteByOrderId(id);
+    }
+
+    @Override
+    public List<WsOrderDetailsDTO> findAllByOrderId(Long orderId) {
+        log.debug("Request to findAllByOrderId WsOrderDetails : {}", orderId);
+        return wsOrderDetailsRepository.findAllByOrderId(orderId).stream().map(wsOrderDetailsMapper::toDto).collect(Collectors.toList());
     }
 }

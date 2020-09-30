@@ -1,6 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.service.WsBuyerService;
+import com.mycompany.myapp.service.WsOrderDetailsService;
 import com.mycompany.myapp.service.WsOrderService;
+import com.mycompany.myapp.service.dto.WsBuyerDTO;
+import com.mycompany.myapp.service.dto.WsOrderDetailsDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.service.dto.WsOrderDTO;
 
@@ -9,6 +13,7 @@ import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +44,11 @@ public class WsOrderResource {
 
     private final WsOrderService wsOrderService;
 
+    @Autowired
+    WsOrderDetailsService wsOrderDetailsService;
+    @Autowired
+    WsBuyerService wsBuyerService;
+
     public WsOrderResource(WsOrderService wsOrderService) {
         this.wsOrderService = wsOrderService;
     }
@@ -51,16 +61,84 @@ public class WsOrderResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-orders")
-    public ResponseEntity<WsOrderDTO> createWsOrder(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
+    public ResponseEntity<String> createWsOrder(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
+
         log.debug("REST request to save WsOrder : {}", wsOrderDTO);
         if (wsOrderDTO.getId() != null) {
-            throw new BadRequestAlertException("A new wsOrder cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new wsOrder cannot have an ID", ENTITY_NAME, "idexists");
         }
+        // 校验余额是否足够
+        WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
+        Float priceTotal = 0F;
+        for (WsOrderDetailsDTO detail : wsOrderDTO.getDetails()) {
+            priceTotal += detail.getPrice() * detail.getNum();
+        }
+        if (wsBuyerDTO.getBalance() < priceTotal) {
+            ResponseEntity res = new ResponseEntity("余额不足，可适当减少订单中的商品", HttpStatus.INTERNAL_SERVER_ERROR);
+            return res;
+        }
+        wsOrderDTO.setTotalPrice(priceTotal);
         WsOrderDTO result = wsOrderService.save(wsOrderDTO);
-        return ResponseEntity.created(new URI("/api/ws-orders/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+
+        for (WsOrderDetailsDTO detail : wsOrderDTO.getDetails()) {
+            detail.setOrderId(result.getId());
+            wsOrderDetailsService.save(detail);
+        }
+        // 减去对应余额
+        wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() - priceTotal);
+        wsBuyerService.save(wsBuyerDTO);
+
+        ResponseEntity res = new ResponseEntity("订单已生成", HttpStatus.INTERNAL_SERVER_ERROR);
+        return res;
     }
+
+    @PostMapping("/updateWsOrderState")
+    public ResponseEntity<String> updateWsOrderState(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
+        log.debug("REST request to save WsOrder : {}", wsOrderDTO);
+        if (wsOrderDTO.getId() == null) {
+            throw new BadRequestAlertException("A new wsOrder must have an ID", ENTITY_NAME, "id");
+        }
+
+        Optional<WsOrderDTO> queryRes = wsOrderService.findOne(wsOrderDTO.getId());
+        WsOrderDTO queryDTO = queryRes.get();
+        //todo 状态改变  引起一些业务变动
+        /*
+        动作：
+        买家创建
+        卖家接单/拒单
+        卖家备货完毕
+        买家签收
+
+        状态：
+        等待商家接单
+        备货中/取消
+        送货中
+        已签收
+        */
+        if ("备货中".equals(wsOrderDTO.getStatus())) {
+            if (!"等待商家接单".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）原状态不是“等待商家接单”，无法去备货", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            if (!"备货中".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）已经正在备货，请刷新", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）不是你家的订单，无法去备货", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+
+            //
+        }
+
+        queryDTO.setStatus(wsOrderDTO.getStatus());
+
+        wsOrderService.save(queryDTO);
+        ResponseEntity res = new ResponseEntity("成功", HttpStatus.OK);
+        return res;
+    }
+
 
     /**
      * {@code PUT  /ws-orders} : Updates an existing wsOrder.
@@ -107,6 +185,10 @@ public class WsOrderResource {
     public ResponseEntity<WsOrderDTO> getWsOrder(@PathVariable Long id) {
         log.debug("REST request to get WsOrder : {}", id);
         Optional<WsOrderDTO> wsOrderDTO = wsOrderService.findOne(id);
+        List<WsOrderDetailsDTO> detailsDTOS = wsOrderDetailsService.findAllByOrderId(id);
+        if (wsOrderDTO.isPresent())
+            wsOrderDTO.get().setDetails(detailsDTOS);
+
         return ResponseUtil.wrapOrNotFound(wsOrderDTO);
     }
 
@@ -120,6 +202,7 @@ public class WsOrderResource {
     public ResponseEntity<Void> deleteWsOrder(@PathVariable Long id) {
         log.debug("REST request to delete WsOrder : {}", id);
         wsOrderService.delete(id);
+        wsOrderDetailsService.deleteByOrderId(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

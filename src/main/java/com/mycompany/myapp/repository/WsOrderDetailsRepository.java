@@ -14,4 +14,6 @@ import java.util.List;
 @Repository
 public interface WsOrderDetailsRepository extends JpaRepository<WsOrderDetails, Long> {
     List<WsOrderDetails> findAllByOrderId(Long orderId);
+
+    void deleteByOrderId(Long orderId);
 }

@@ -9,7 +9,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link WsOrder} and its DTO {@link WsOrderDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {WsOrderDetailsMapper.class})
 public interface WsOrderMapper extends EntityMapper<WsOrderDTO, WsOrder> {
 
 

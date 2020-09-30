@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A DTO for the {@link com.mycompany.myapp.domain.WsOrder} entity.
@@ -12,11 +13,40 @@ public class WsOrderDTO implements Serializable {
     private Long buyerId;
     private String buyerName;
 
+    private Long storeId;
+    private String storeName;
+
     private Long parkerId;
 
     private Float totalPrice;
 
     private String status;
+
+    private List<WsOrderDetailsDTO> details;
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public List<WsOrderDetailsDTO> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<WsOrderDetailsDTO> details) {
+        this.details = details;
+    }
 
     public String getBuyerName() {
         return buyerName;
@@ -83,15 +113,18 @@ public class WsOrderDTO implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "WsOrderDTO{" +
-            "id=" + getId() +
-            ", buyerId=" + getBuyerId() +
-            ", parkerId=" + getParkerId() +
-            ", totalPrice=" + getTotalPrice() +
-            ", status='" + getStatus() + "'" +
-            "}";
+            "id=" + id +
+            ", buyerId=" + buyerId +
+            ", buyerName='" + buyerName + '\'' +
+            ", storeId=" + storeId +
+            ", storeName='" + storeName + '\'' +
+            ", parkerId=" + parkerId +
+            ", totalPrice=" + totalPrice +
+            ", status='" + status + '\'' +
+            ", details=" + details +
+            '}';
     }
 }

@@ -22,6 +22,9 @@ public class WsOrder implements Serializable {
     @Column(name = "buyer_id")
     private Long buyerId;
 
+    @Column(name = "store_id")
+    private Long storeId;
+
     @Column(name = "parker_id")
     private Long parkerId;
 
@@ -30,6 +33,15 @@ public class WsOrder implements Serializable {
 
     @Column(name = "status")
     private String status;
+
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
