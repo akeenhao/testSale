@@ -5,6 +5,7 @@ import com.mycompany.myapp.service.dto.WsStoreDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
@@ -45,4 +46,8 @@ public interface WsStoreService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    void addBalance(Long id, BigDecimal money);
+
+    void subBalance(Long id, BigDecimal money);
 }

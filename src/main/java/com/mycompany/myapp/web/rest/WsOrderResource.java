@@ -1,10 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.service.WsBuyerService;
-import com.mycompany.myapp.service.WsOrderDetailsService;
-import com.mycompany.myapp.service.WsOrderService;
+import com.mycompany.myapp.domain.WsBuyer;
+import com.mycompany.myapp.service.*;
 import com.mycompany.myapp.service.dto.WsBuyerDTO;
 import com.mycompany.myapp.service.dto.WsOrderDetailsDTO;
+import com.mycompany.myapp.service.dto.WsStoreDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.service.dto.WsOrderDTO;
 
@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -48,6 +49,11 @@ public class WsOrderResource {
     WsOrderDetailsService wsOrderDetailsService;
     @Autowired
     WsBuyerService wsBuyerService;
+    @Autowired
+    WsStoreService wsStoreService;
+    @Autowired
+    WsProductService wsProductService;
+
 
     public WsOrderResource(WsOrderService wsOrderService) {
         this.wsOrderService = wsOrderService;
@@ -128,8 +134,49 @@ public class WsOrderResource {
                 ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）不是你家的订单，无法去备货", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
+        }
+        if ("取消".equals(wsOrderDTO.getStatus())) {
+            if (!"等待商家接单".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）商家已接单，在处理中，无法取消", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            Float priceTotal = 0F;
+            List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
+            for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
+                priceTotal += detail.getPrice() * detail.getNum();
+            }
 
-            //
+            WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
+            // 加上对应余额
+            wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() + priceTotal);
+            wsBuyerService.save(wsBuyerDTO);
+        }
+        if ("送货中".equals(wsOrderDTO.getStatus())) {
+            if (!"备货中".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）原状态不是“备货中”，无法去送货", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）不是你家的订单，无法去送货", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+        }
+        if ("已签收".equals(wsOrderDTO.getStatus())) {
+            if (!"送货中".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）未送货，无法签收", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）不是你家的订单，无法去送货", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+
+            Float priceTotal = 0F;
+            List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
+            for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
+                priceTotal += detail.getPrice() * detail.getNum();
+            }
+            wsStoreService.addBalance(queryDTO.getStoreId(), BigDecimal.valueOf(priceTotal));
         }
 
         queryDTO.setStatus(wsOrderDTO.getStatus());
@@ -185,9 +232,18 @@ public class WsOrderResource {
     public ResponseEntity<WsOrderDTO> getWsOrder(@PathVariable Long id) {
         log.debug("REST request to get WsOrder : {}", id);
         Optional<WsOrderDTO> wsOrderDTO = wsOrderService.findOne(id);
+        wsOrderDTO.get().setStoreName(wsStoreService.findOne(wsOrderDTO.get().getStoreId()).get().getName());
+        WsBuyerDTO wsBuyer = wsBuyerService.findOne(wsOrderDTO.get().getBuyerId()).get();
+        wsOrderDTO.get().setBuyerName(wsBuyer.getName());
+        wsOrderDTO.get().setBuyerAddr(wsBuyer.getAddress());
+        wsOrderDTO.get().setBuyerTel(wsBuyer.getPhone());
         List<WsOrderDetailsDTO> detailsDTOS = wsOrderDetailsService.findAllByOrderId(id);
-        if (wsOrderDTO.isPresent())
+        if (wsOrderDTO.isPresent()) {
+            for (WsOrderDetailsDTO wsOrderDetailsDTO : detailsDTOS) {
+                wsOrderDetailsDTO.setProductName(wsProductService.findOne(wsOrderDetailsDTO.getProductId()).get().getName());
+            }
             wsOrderDTO.get().setDetails(detailsDTOS);
+        }
 
         return ResponseUtil.wrapOrNotFound(wsOrderDTO);
     }

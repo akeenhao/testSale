@@ -12,7 +12,8 @@ public class WsOrderDTO implements Serializable {
 
     private Long buyerId;
     private String buyerName;
-
+    private String buyerAddr;
+    private String buyerTel;
     private Long storeId;
     private String storeName;
 
@@ -54,6 +55,22 @@ public class WsOrderDTO implements Serializable {
 
     public void setBuyerName(String buyerName) {
         this.buyerName = buyerName;
+    }
+
+    public String getBuyerAddr() {
+        return buyerAddr;
+    }
+
+    public String getBuyerTel() {
+        return buyerTel;
+    }
+
+    public void setBuyerTel(String buyerTel) {
+        this.buyerTel = buyerTel;
+    }
+
+    public void setBuyerAddr(String buyerAddr) {
+        this.buyerAddr = buyerAddr;
     }
 
     public Long getId() {

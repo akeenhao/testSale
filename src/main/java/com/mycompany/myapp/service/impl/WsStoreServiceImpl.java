@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
@@ -86,5 +87,15 @@ public class WsStoreServiceImpl implements WsStoreService {
     public void delete(Long id) {
         log.debug("Request to delete WsStore : {}", id);
         wsStoreRepository.deleteById(id);
+    }
+
+    @Override
+    public void addBalance(Long id, BigDecimal money) {
+        wsStoreRepository.addBalance(id, money);
+    }
+
+    @Override
+    public void subBalance(Long id, BigDecimal money) {
+        wsStoreRepository.subBalance(id, money);
     }
 }
