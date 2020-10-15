@@ -11,6 +11,7 @@ import com.mycompany.myapp.service.dto.WsOrderDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,11 +216,43 @@ public class WsOrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsOrders in body.
      */
     @GetMapping("/ws-orders")
-    public ResponseEntity<List<WsOrderDTO>> getAllWsOrders(Pageable pageable) {
+    public ResponseEntity<Page<WsOrderDTO>> getAllWsOrders(Pageable pageable) {
         log.debug("REST request to get a page of WsOrders");
         Page<WsOrderDTO> page = wsOrderService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
+    @GetMapping("/ws-orders-byStoreAndStatus")
+    public ResponseEntity<Page<WsOrderDTO>> getAllWsOrdersByParam(Long storeId, String orderType, Pageable pageable) {
+        log.debug("REST request to get a page of WsOrders");
+
+        Page<WsOrderDTO> page;
+        if (StringUtils.isNotBlank(orderType)) {
+            page = wsOrderService.findAllByStoreIdAndStatus(storeId, orderType, pageable);
+
+        } else {
+            page = wsOrderService.findAllByStoreId(storeId, pageable);
+
+        }
+
+        for (WsOrderDTO wsOrderDTO : page.getContent()) {
+            wsOrderDTO.setStoreName(wsStoreService.findOne(storeId).get().getName());
+            WsBuyerDTO wsBuyer = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
+            wsOrderDTO.setBuyerName(wsBuyer.getName());
+            wsOrderDTO.setBuyerAddr(wsBuyer.getAddress());
+            wsOrderDTO.setBuyerTel(wsBuyer.getPhone());
+            List<WsOrderDetailsDTO> detailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
+            for (WsOrderDetailsDTO wsOrderDetailsDTO : detailsDTOS) {
+                wsOrderDetailsDTO.setProductName(wsProductService.findOne(wsOrderDetailsDTO.getProductId()).get().getName());
+            }
+            wsOrderDTO.setDetails(detailsDTOS);
+        }
+
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+
     }
 
     /**

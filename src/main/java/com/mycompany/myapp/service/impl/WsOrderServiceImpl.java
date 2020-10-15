@@ -49,6 +49,22 @@ public class WsOrderServiceImpl implements WsOrderService {
             .map(wsOrderMapper::toDto);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsOrderDTO> findAllByStoreIdAndStatus(Long storeId, String status, Pageable pageable) {
+        log.debug("Request to get all WsOrders");
+        return wsOrderRepository.findAllByStoreIdAndStatus(storeId, status, pageable)
+            .map(wsOrderMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsOrderDTO> findAllByStoreId(Long storeId, Pageable pageable) {
+        log.debug("Request to get all WsOrders");
+        return wsOrderRepository.findAllByStoreId(storeId, pageable)
+            .map(wsOrderMapper::toDto);
+    }
+
 
     @Override
     @Transactional(readOnly = true)

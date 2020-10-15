@@ -28,6 +28,10 @@ public interface WsOrderService {
      */
     Page<WsOrderDTO> findAll(Pageable pageable);
 
+    Page<WsOrderDTO> findAllByStoreIdAndStatus(Long storeId, String status, Pageable pageable);
+
+    Page<WsOrderDTO> findAllByStoreId(Long storeId, Pageable pageable);
+
 
     /**
      * Get the "id" wsOrder.
