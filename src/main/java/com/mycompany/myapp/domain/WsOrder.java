@@ -4,6 +4,7 @@ package com.mycompany.myapp.domain;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * A WsOrder.
@@ -34,6 +35,29 @@ public class WsOrder implements Serializable {
     @Column(name = "status")
     private String status;
 
+
+    @Column(name = "create_time")
+    private Date createTime;
+
+
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
     public Long getStoreId() {
         return storeId;
@@ -121,15 +145,17 @@ public class WsOrder implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "WsOrder{" +
-            "id=" + getId() +
-            ", buyerId=" + getBuyerId() +
-            ", parkerId=" + getParkerId() +
-            ", totalPrice=" + getTotalPrice() +
-            ", status='" + getStatus() + "'" +
-            "}";
+            "id=" + id +
+            ", buyerId=" + buyerId +
+            ", storeId=" + storeId +
+            ", parkerId=" + parkerId +
+            ", totalPrice=" + totalPrice +
+            ", status='" + status + '\'' +
+            ", createTime=" + createTime +
+            ", updateTime=" + updateTime +
+            '}';
     }
 }

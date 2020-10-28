@@ -43,9 +43,12 @@ spring:
 #    password: bpm
 #    password: password
     driverClassName:  com.mysql.jdbc.Driver
-    url: jdbc:mysql://rds34-mysql-shinho-dcloud-sale-dev.c0dvigf5kjq0.rds.cn-north-1.amazonaws.com.cn:3306/sl?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
-    username: sl
-    password: sl@aws20190618
+#    url: jdbc:mysql://rds34-mysql-shinho-dcloud-sale-dev.c0dvigf5kjq0.rds.cn-north-1.amazonaws.com.cn:3306/sl?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
+#    username: sl
+#    password: sl@aws20190618
+    url: jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
+    username: root
+    password:
 
 
     hikari:
