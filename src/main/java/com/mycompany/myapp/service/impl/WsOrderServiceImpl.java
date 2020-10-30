@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +46,13 @@ public class WsOrderServiceImpl implements WsOrderService {
     @Override
     @Transactional(readOnly = true)
     public Page<WsOrderDTO> findAll(Pageable pageable) {
+
         log.debug("Request to get all WsOrders");
+        if (pageable.getSort().isUnsorted()) {
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, "createTime");
+            Sort sortTime = Sort.by(order);
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortTime);
+        }
         return wsOrderRepository.findAll(pageable)
             .map(wsOrderMapper::toDto);
     }
@@ -53,7 +61,25 @@ public class WsOrderServiceImpl implements WsOrderService {
     @Transactional(readOnly = true)
     public Page<WsOrderDTO> findAllByStoreIdAndStatus(Long storeId, String status, Pageable pageable) {
         log.debug("Request to get all WsOrders");
+        if (pageable.getSort().isUnsorted()) {
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, "createTime");
+            Sort sortTime = Sort.by(order);
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortTime);
+        }
         return wsOrderRepository.findAllByStoreIdAndStatus(storeId, status, pageable)
+            .map(wsOrderMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsOrderDTO> findAllByBuyerIdAndStatus(Long buyerId, String status, Pageable pageable) {
+        log.debug("Request to get all WsOrders");
+        if (pageable.getSort().isUnsorted()) {
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, "createTime");
+            Sort sortTime = Sort.by(order);
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortTime);
+        }
+        return wsOrderRepository.findAllByBuyerIdAndStatus(buyerId, status, pageable)
             .map(wsOrderMapper::toDto);
     }
 
@@ -61,7 +87,25 @@ public class WsOrderServiceImpl implements WsOrderService {
     @Transactional(readOnly = true)
     public Page<WsOrderDTO> findAllByStoreId(Long storeId, Pageable pageable) {
         log.debug("Request to get all WsOrders");
+        if (pageable.getSort().isUnsorted()) {
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, "createTime");
+            Sort sortTime = Sort.by(order);
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortTime);
+        }
         return wsOrderRepository.findAllByStoreId(storeId, pageable)
+            .map(wsOrderMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsOrderDTO> findAllByBuyerId(Long buyerId, Pageable pageable) {
+        log.debug("Request to get all WsOrders");
+        if (pageable.getSort().isUnsorted()) {
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, "createTime");
+            Sort sortTime = Sort.by(order);
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortTime);
+        }
+        return wsOrderRepository.findAllByBuyerId(buyerId, pageable)
             .map(wsOrderMapper::toDto);
     }
 

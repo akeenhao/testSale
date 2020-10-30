@@ -1,6 +1,8 @@
 package com.mycompany.myapp.service.dto;
 
+import javax.persistence.Column;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +25,28 @@ public class WsOrderDTO implements Serializable {
 
     private String status;
 
+    private Date createTime;
+
+    private Date updateTime;
+
     private List<WsOrderDetailsDTO> details;
+
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
     public Long getStoreId() {
         return storeId;

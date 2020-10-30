@@ -90,11 +90,11 @@ public class WsStoreResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsStores in body.
      */
     @GetMapping("/ws-stores")
-    public ResponseEntity<List<WsStoreDTO>> getAllWsStores(Pageable pageable) {
+    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(Pageable pageable) {
         log.debug("REST request to get a page of WsStores");
         Page<WsStoreDTO> page = wsStoreService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().headers(headers).body(page);
     }
 
     @GetMapping("/ws-stores-byAreaId/{areaId}")
