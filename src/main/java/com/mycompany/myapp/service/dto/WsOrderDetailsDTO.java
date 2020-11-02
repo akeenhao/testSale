@@ -16,7 +16,7 @@ public class WsOrderDetailsDTO implements Serializable {
 
     private Float price;
 
-    private String status;
+//    private String status;
 
     private Float num;
 
@@ -60,13 +60,13 @@ public class WsOrderDetailsDTO implements Serializable {
         this.price = price;
     }
 
-    public String getStatus() {
+/*    public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
+    }*/
 
     public Float getNum() {
         return num;
@@ -101,7 +101,7 @@ public class WsOrderDetailsDTO implements Serializable {
             ", orderId=" + getOrderId() +
             ", productId=" + getProductId() +
             ", price=" + getPrice() +
-            ", status='" + getStatus() + "'" +
+//            ", status='" + getStatus() + "'" +
             ", num=" + getNum() +
             "}";
     }

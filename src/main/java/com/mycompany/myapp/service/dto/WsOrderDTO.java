@@ -19,7 +19,7 @@ public class WsOrderDTO implements Serializable {
     private Long storeId;
     private String storeName;
 
-    private Long parkerId;
+//    private Long parkerId;
 
     private Float totalPrice;
 
@@ -111,14 +111,14 @@ public class WsOrderDTO implements Serializable {
     public void setBuyerId(Long buyerId) {
         this.buyerId = buyerId;
     }
-
+/*
     public Long getParkerId() {
         return parkerId;
     }
 
     public void setParkerId(Long parkerId) {
         this.parkerId = parkerId;
-    }
+    }*/
 
     public Float getTotalPrice() {
         return totalPrice;
@@ -161,7 +161,7 @@ public class WsOrderDTO implements Serializable {
             ", buyerName='" + buyerName + '\'' +
             ", storeId=" + storeId +
             ", storeName='" + storeName + '\'' +
-            ", parkerId=" + parkerId +
+//            ", parkerId=" + parkerId +
             ", totalPrice=" + totalPrice +
             ", status='" + status + '\'' +
             ", details=" + details +

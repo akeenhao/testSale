@@ -62,6 +62,16 @@ public class WsBuyerResource {
             .body(result);
     }
 
+    @PostMapping("/buyer-addbalance")
+    public ResponseEntity<String> addBalance(@RequestBody WsBuyerDTO wsBuyerDTO) throws URISyntaxException {
+
+        String msg = wsBuyerService.addBalance(wsBuyerDTO);
+
+        return ResponseEntity.created(new URI("/api/buyer-addbalance"))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, msg))
+            .body(msg);
+    }
+
     /**
      * {@code PUT  /ws-buyers} : Updates an existing wsBuyer.
      *

@@ -15,8 +15,7 @@ public class WsOrderDetails implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "order_id")
@@ -28,8 +27,8 @@ public class WsOrderDetails implements Serializable {
     @Column(name = "price")
     private Float price;
 
-    @Column(name = "status")
-    private String status;
+/*    @Column(name = "status")
+    private String status;*/
 
     @Column(name = "num")
     private Float num;
@@ -82,7 +81,7 @@ public class WsOrderDetails implements Serializable {
         this.price = price;
     }
 
-    public String getStatus() {
+    /*public String getStatus() {
         return status;
     }
 
@@ -93,7 +92,7 @@ public class WsOrderDetails implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
+    }*/
 
     public Float getNum() {
         return num;
@@ -133,7 +132,7 @@ public class WsOrderDetails implements Serializable {
             ", orderId=" + getOrderId() +
             ", productId=" + getProductId() +
             ", price=" + getPrice() +
-            ", status='" + getStatus() + "'" +
+//            ", status='" + getStatus() + "'" +
             ", num=" + getNum() +
             "}";
     }

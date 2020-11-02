@@ -19,6 +19,7 @@ public interface WsBuyerService {
      * @return the persisted entity.
      */
     WsBuyerDTO save(WsBuyerDTO wsBuyerDTO);
+    String addBalance(WsBuyerDTO wsBuyerDTO);
 
     /**
      * Get all the wsBuyers.

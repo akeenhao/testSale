@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50649
 File Encoding         : 65001
 
-Date: 2020-10-30 15:58:16
+Date: 2020-11-02 16:53:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -46,7 +46,7 @@ CREATE TABLE `ws_buyer` (
 -- ----------------------------
 DROP TABLE IF EXISTS `ws_order`;
 CREATE TABLE `ws_order` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `store_id` bigint(20) DEFAULT NULL,
   `buyer_id` bigint(20) DEFAULT NULL,
   `parker_id` bigint(20) DEFAULT NULL,
@@ -55,21 +55,21 @@ CREATE TABLE `ws_order` (
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for ws_order_details
 -- ----------------------------
 DROP TABLE IF EXISTS `ws_order_details`;
 CREATE TABLE `ws_order_details` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `order_id` bigint(20) DEFAULT NULL,
   `product_id` bigint(20) DEFAULT NULL,
   `price` float DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `num` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for ws_product

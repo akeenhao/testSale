@@ -1,12 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.WsBuyer;
+import com.mycompany.myapp.domain.WsProduct;
 import com.mycompany.myapp.service.*;
-import com.mycompany.myapp.service.dto.WsBuyerDTO;
-import com.mycompany.myapp.service.dto.WsOrderDetailsDTO;
-import com.mycompany.myapp.service.dto.WsStoreDTO;
+import com.mycompany.myapp.service.dto.*;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
-import com.mycompany.myapp.service.dto.WsOrderDTO;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -27,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +69,8 @@ public class WsOrderResource {
     @PostMapping("/ws-orders")
     public ResponseEntity<String> createWsOrder(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
 
+        wsOrderDTO.setCreateTime(new Date());
+        wsOrderDTO.setUpdateTime(new Date());
         log.debug("REST request to save WsOrder : {}", wsOrderDTO);
         if (wsOrderDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsOrder cannot have an ID", ENTITY_NAME, "idexists");
@@ -78,24 +79,35 @@ public class WsOrderResource {
         WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
         Float priceTotal = 0F;
         for (WsOrderDetailsDTO detail : wsOrderDTO.getDetails()) {
-            priceTotal += detail.getPrice() * detail.getNum();
-        }
-        if (wsBuyerDTO.getBalance() < priceTotal) {
-            ResponseEntity res = new ResponseEntity("余额不足，可适当减少订单中的商品", HttpStatus.INTERNAL_SERVER_ERROR);
-            return res;
+            WsProductDTO wsProductDTO = wsProductService.findOne(detail.getProductId()).get();
+            if (null == wsProductDTO) {
+                ResponseEntity res = new ResponseEntity("商品错误：" + detail.getProductId() + "-" + detail.getProductName(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            priceTotal += wsProductDTO.getPrice() * detail.getNum();
+            detail.setPrice(wsProductDTO.getPrice());
         }
         wsOrderDTO.setTotalPrice(priceTotal);
+        wsOrderDTO.setStatus("未付款");
         WsOrderDTO result = wsOrderService.save(wsOrderDTO);
-
         for (WsOrderDetailsDTO detail : wsOrderDTO.getDetails()) {
             detail.setOrderId(result.getId());
             wsOrderDetailsService.save(detail);
         }
+
+        if (wsBuyerDTO.getBalance() < priceTotal) {
+            ResponseEntity res = new ResponseEntity("余额不足，总价" + priceTotal + "元", HttpStatus.INTERNAL_SERVER_ERROR);
+            return res;
+        }
+
         // 减去对应余额
         wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() - priceTotal);
         wsBuyerService.save(wsBuyerDTO);
 
-        ResponseEntity res = new ResponseEntity("订单已生成", HttpStatus.INTERNAL_SERVER_ERROR);
+        result.setStatus("等待商家接单");
+        wsOrderService.save(result);
+
+        ResponseEntity res = new ResponseEntity("订单已生成,等待商家接单", HttpStatus.OK);
         return res;
     }
 
@@ -108,26 +120,38 @@ public class WsOrderResource {
 
         Optional<WsOrderDTO> queryRes = wsOrderService.findOne(wsOrderDTO.getId());
         WsOrderDTO queryDTO = queryRes.get();
-        //todo 状态改变  引起一些业务变动
-        /*
-        动作：
-        买家创建
-        卖家接单/拒单
-        卖家备货完毕
-        买家签收
 
-        状态：
-        等待商家接单
-        备货中/取消
-        送货中
-        已签收
-        */
-        if ("备货中".equals(wsOrderDTO.getStatus())) {
-            if (!"等待商家接单".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）原状态不是“等待商家接单”，无法去备货", HttpStatus.INTERNAL_SERVER_ERROR);
+        if ("等待商家接单".equals(wsOrderDTO.getStatus())) {
+            if (!"未付款".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有未付款的订单才能去付款", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
-            if (!"备货中".equals(queryDTO.getStatus())) {
+
+            // 减去对应余额
+            WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
+            Float priceTotal = 0F;
+            List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
+            for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
+                WsProductDTO wsProductDTO = wsProductService.findOne(detail.getProductId()).get();
+                if (null == wsProductDTO) {
+                    ResponseEntity res = new ResponseEntity("商品错误：" + detail.getProductId() + "-" + detail.getProductName(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return res;
+                }
+                priceTotal += wsProductDTO.getPrice() * detail.getNum();
+            }
+            wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() - priceTotal);
+            wsBuyerService.save(wsBuyerDTO);
+
+            wsOrderDTO.setStatus("等待商家接单");
+            wsOrderService.save(wsOrderDTO);
+
+        }
+        if ("备货中".equals(wsOrderDTO.getStatus())) {
+            if (!"等待商家接单".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有接单的订单才能去备货", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            if ("备货中".equals(queryDTO.getStatus())) {
                 ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）已经正在备货，请刷新", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
@@ -144,7 +168,12 @@ public class WsOrderResource {
             Float priceTotal = 0F;
             List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
             for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
-                priceTotal += detail.getPrice() * detail.getNum();
+                WsProductDTO wsProductDTO = wsProductService.findOne(detail.getProductId()).get();
+                if (null == wsProductDTO) {
+                    ResponseEntity res = new ResponseEntity("商品错误：" + detail.getProductId() + "-" + detail.getProductName(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return res;
+                }
+                priceTotal += wsProductDTO.getPrice() * detail.getNum();
             }
 
             WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
@@ -152,9 +181,17 @@ public class WsOrderResource {
             wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() + priceTotal);
             wsBuyerService.save(wsBuyerDTO);
         }
+        if ("删除".equals(wsOrderDTO.getStatus())) {
+            if (!"取消".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有取消状态的订单才能删除", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+            wsOrderService.delete(wsOrderDTO.getId());
+            wsOrderDetailsService.deleteByOrderId(wsOrderDTO.getId());
+        }
         if ("送货中".equals(wsOrderDTO.getStatus())) {
             if (!"备货中".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）原状态不是“备货中”，无法去送货", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有备货中的订单才能去送货", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
             if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
@@ -164,7 +201,7 @@ public class WsOrderResource {
         }
         if ("已签收".equals(wsOrderDTO.getStatus())) {
             if (!"送货中".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）未送货，无法签收", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有送货状态的订单，才能签收", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
             if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {

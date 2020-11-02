@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,6 +40,25 @@ public class WsBuyerServiceImpl implements WsBuyerService {
         WsBuyer wsBuyer = wsBuyerMapper.toEntity(wsBuyerDTO);
         wsBuyer = wsBuyerRepository.save(wsBuyer);
         return wsBuyerMapper.toDto(wsBuyer);
+    }
+
+    @Override
+    public String addBalance(WsBuyerDTO wsBuyerDTO) {
+        log.debug("Request to addBalance WsBuyer : {}", wsBuyerDTO);
+
+        List<WsBuyer> wsBuyerList = wsBuyerRepository.findAllByPhoneAndStatus(wsBuyerDTO.getPhone(), true);
+        if (null == wsBuyerList || wsBuyerList.isEmpty()) {
+            log.info("phone 不存在 {}", wsBuyerDTO.getPhone());
+            return "手机号不存在" + wsBuyerDTO.getPhone();
+        }
+        if (wsBuyerList.size() != 1) {
+            log.info("phone 多条 {}", wsBuyerDTO.getPhone());
+            return "手机号存在多条" + wsBuyerDTO.getPhone();
+        }
+
+        wsBuyerRepository.addBalance(wsBuyerDTO.getPhone(), wsBuyerDTO.getBalance());
+
+        return "充值" + wsBuyerDTO.getBalance() + "元成功，当前余额" + (wsBuyerList.get(0).getBalance() + wsBuyerDTO.getBalance()) + "元";
     }
 
     @Override
