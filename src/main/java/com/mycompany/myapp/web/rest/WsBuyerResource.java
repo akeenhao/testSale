@@ -51,15 +51,17 @@ public class WsBuyerResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-buyers")
-    public ResponseEntity<WsBuyerDTO> createWsBuyer(@RequestBody WsBuyerDTO wsBuyerDTO) throws URISyntaxException {
+    public ResponseEntity<String> createWsBuyer(@RequestBody WsBuyerDTO wsBuyerDTO) throws URISyntaxException {
         log.debug("REST request to save WsBuyer : {}", wsBuyerDTO);
         if (wsBuyerDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsBuyer cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        WsBuyerDTO result = wsBuyerService.save(wsBuyerDTO);
-        return ResponseEntity.created(new URI("/api/ws-buyers/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        try {
+            wsBuyerService.insert(wsBuyerDTO);
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity("注册成功", HttpStatus.OK);
     }
 
     @PostMapping("/buyer-addbalance")
@@ -82,15 +84,13 @@ public class WsBuyerResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/ws-buyers")
-    public ResponseEntity<WsBuyerDTO> updateWsBuyer(@RequestBody WsBuyerDTO wsBuyerDTO) throws URISyntaxException {
+    public ResponseEntity<String> updateWsBuyer(@RequestBody WsBuyerDTO wsBuyerDTO) throws URISyntaxException {
         log.debug("REST request to update WsBuyer : {}", wsBuyerDTO);
         if (wsBuyerDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        WsBuyerDTO result = wsBuyerService.save(wsBuyerDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, wsBuyerDTO.getId().toString()))
-            .body(result);
+        wsBuyerService.save(wsBuyerDTO);
+        return new ResponseEntity("更新成功", HttpStatus.OK);
     }
 
     /**

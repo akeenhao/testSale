@@ -18,7 +18,8 @@ public interface WsBuyerService {
      * @param wsBuyerDTO the entity to save.
      * @return the persisted entity.
      */
-    WsBuyerDTO save(WsBuyerDTO wsBuyerDTO);
+    WsBuyerDTO insert(WsBuyerDTO wsBuyerDTO) throws Exception;
+    WsBuyerDTO save(WsBuyerDTO wsBuyerDTO) ;
     String addBalance(WsBuyerDTO wsBuyerDTO);
 
     /**

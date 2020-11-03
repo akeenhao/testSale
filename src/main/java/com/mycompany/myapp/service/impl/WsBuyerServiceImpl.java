@@ -35,6 +35,23 @@ public class WsBuyerServiceImpl implements WsBuyerService {
     }
 
     @Override
+    public WsBuyerDTO insert(WsBuyerDTO wsBuyerDTO) throws Exception {
+        log.debug("Request to save WsBuyer : {}", wsBuyerDTO);
+
+        if (null == wsBuyerDTO.getId()) {
+            WsBuyer wsBuyer = wsBuyerRepository.findByPhone(wsBuyerDTO.getPhone());
+            if (null != wsBuyer) {
+                Exception e = new Exception("手机号已存在！");
+                throw e;
+            }
+        }
+
+        WsBuyer wsBuyer = wsBuyerMapper.toEntity(wsBuyerDTO);
+        wsBuyer = wsBuyerRepository.save(wsBuyer);
+        return wsBuyerMapper.toDto(wsBuyer);
+    }
+
+    @Override
     public WsBuyerDTO save(WsBuyerDTO wsBuyerDTO) {
         log.debug("Request to save WsBuyer : {}", wsBuyerDTO);
         WsBuyer wsBuyer = wsBuyerMapper.toEntity(wsBuyerDTO);

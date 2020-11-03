@@ -19,21 +19,31 @@ public class WsStoreDTO implements Serializable {
 
     private String address;
 
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     private Boolean status;
 
     private String picture;
 
+    private String password;
+
     private Integer totalOrderNum;
 
-    private Integer point;
+    private Integer point = 0;
 
     private Instant openTime;
 
     private Long areaId;
 
     private String areaName;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getAreaName() {
         return areaName;
@@ -167,6 +177,7 @@ public class WsStoreDTO implements Serializable {
             ", address='" + getAddress() + "'" +
             ", balance=" + getBalance() +
             ", status='" + isStatus() + "'" +
+            ", password='" + getPassword() + "'" +
             ", picture='" + getPicture() + "'" +
             ", totalOrderNum=" + getTotalOrderNum() +
             ", point=" + getPoint() +

@@ -15,8 +15,7 @@ public class WsBuyer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -30,6 +29,9 @@ public class WsBuyer implements Serializable {
 
     @Column(name = "status")
     private Boolean status;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "balance")
     private Float balance;
@@ -54,6 +56,14 @@ public class WsBuyer implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {
@@ -133,6 +143,7 @@ public class WsBuyer implements Serializable {
             ", name='" + getName() + "'" +
             ", phone='" + getPhone() + "'" +
             ", address='" + getAddress() + "'" +
+            ", password='" + getPassword() + "'" +
             ", status='" + isStatus() + "'" +
             ", balance=" + getBalance() +
             "}";

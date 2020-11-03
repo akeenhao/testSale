@@ -17,8 +17,7 @@ public class WsStore implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -41,6 +40,9 @@ public class WsStore implements Serializable {
 
     @Column(name = "picture")
     private String picture;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "total_order_num")
     private Integer totalOrderNum;
@@ -65,6 +67,14 @@ public class WsStore implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public WsStore name(String name) {
@@ -232,6 +242,7 @@ public class WsStore implements Serializable {
             ", personName='" + getPersonName() + "'" +
             ", phone='" + getPhone() + "'" +
             ", address='" + getAddress() + "'" +
+            ", password='" + getPassword() + "'" +
             ", balance=" + getBalance() +
             ", status='" + isStatus() + "'" +
             ", picture='" + getPicture() + "'" +

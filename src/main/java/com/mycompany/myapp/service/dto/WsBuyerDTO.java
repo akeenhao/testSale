@@ -6,7 +6,7 @@ import java.io.Serializable;
  * A DTO for the {@link com.mycompany.myapp.domain.WsBuyer} entity.
  */
 public class WsBuyerDTO implements Serializable {
-    
+
     private Long id;
 
     private String name;
@@ -15,11 +15,13 @@ public class WsBuyerDTO implements Serializable {
 
     private String address;
 
+    private String password;
+
     private Boolean status;
 
-    private Float balance;
+    private Float balance=0f;
 
-    
+
     public Long getId() {
         return id;
     }
@@ -68,6 +70,14 @@ public class WsBuyerDTO implements Serializable {
         this.balance = balance;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -92,6 +102,7 @@ public class WsBuyerDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", phone='" + getPhone() + "'" +
+            ", password='" + getPassword() + "'" +
             ", address='" + getAddress() + "'" +
             ", status='" + isStatus() + "'" +
             ", balance=" + getBalance() +

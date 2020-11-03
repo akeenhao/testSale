@@ -51,15 +51,19 @@ public class WsStoreResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-stores")
-    public ResponseEntity<WsStoreDTO> createWsStore(@RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
+    public ResponseEntity<String> createWsStore(@RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
         log.debug("REST request to save WsStore : {}", wsStoreDTO);
         if (wsStoreDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsStore cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        WsStoreDTO result = wsStoreService.save(wsStoreDTO);
-        return ResponseEntity.created(new URI("/api/ws-stores/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        try {
+
+            WsStoreDTO result = wsStoreService.insert(wsStoreDTO);
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity("注册成功", HttpStatus.OK);
+
     }
 
     /**
@@ -98,9 +102,9 @@ public class WsStoreResource {
     }
 
     @GetMapping("/ws-stores-byAreaId/{areaId}")
-    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(Pageable pageable,@PathVariable Long areaId) {
+    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(Pageable pageable, @PathVariable Long areaId) {
         log.debug("REST request to get a page of WsStores");
-        Page<WsStoreDTO> page = wsStoreService.findAll(areaId,pageable);
+        Page<WsStoreDTO> page = wsStoreService.findAll(areaId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
     }

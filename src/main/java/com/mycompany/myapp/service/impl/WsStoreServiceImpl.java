@@ -46,6 +46,20 @@ public class WsStoreServiceImpl implements WsStoreService {
         wsStore = wsStoreRepository.save(wsStore);
         return wsStoreMapper.toDto(wsStore);
     }
+ @Override
+    public WsStoreDTO insert(WsStoreDTO wsStoreDTO) throws Exception {
+        log.debug("Request to save WsStore : {}", wsStoreDTO);
+
+        WsStore wsStore = wsStoreRepository.findByPhone(wsStoreDTO.getPhone());
+        if (null!=wsStore){
+            Exception e = new Exception("手机号已存在！");
+            throw e;
+        }
+
+        wsStore = wsStoreMapper.toEntity(wsStoreDTO);
+        wsStore = wsStoreRepository.save(wsStore);
+        return wsStoreMapper.toDto(wsStore);
+    }
 
     @Override
     @Transactional(readOnly = true)

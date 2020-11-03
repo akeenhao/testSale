@@ -20,6 +20,7 @@ public interface WsStoreService {
      * @return the persisted entity.
      */
     WsStoreDTO save(WsStoreDTO wsStoreDTO);
+    WsStoreDTO insert(WsStoreDTO wsStoreDTO) throws Exception;
 
     /**
      * Get all the wsStores.

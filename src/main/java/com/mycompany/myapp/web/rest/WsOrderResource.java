@@ -123,7 +123,7 @@ public class WsOrderResource {
 
         if ("等待商家接单".equals(wsOrderDTO.getStatus())) {
             if (!"未付款".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有未付款的订单才能去付款", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是" + queryDTO.getStatus() + "，只有未付款的订单才能去付款", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
 
@@ -148,7 +148,7 @@ public class WsOrderResource {
         }
         if ("备货中".equals(wsOrderDTO.getStatus())) {
             if (!"等待商家接单".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有接单的订单才能去备货", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是" + queryDTO.getStatus() + "，只有接单的订单才能去备货", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
             if ("备货中".equals(queryDTO.getStatus())) {
@@ -183,7 +183,7 @@ public class WsOrderResource {
         }
         if ("删除".equals(wsOrderDTO.getStatus())) {
             if (!"取消".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有取消状态的订单才能删除", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是" + queryDTO.getStatus() + "，只有取消状态的订单才能删除", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
             wsOrderService.delete(wsOrderDTO.getId());
@@ -191,7 +191,7 @@ public class WsOrderResource {
         }
         if ("送货中".equals(wsOrderDTO.getStatus())) {
             if (!"备货中".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有备货中的订单才能去送货", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是" + queryDTO.getStatus() + "，只有备货中的订单才能去送货", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
             if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
@@ -201,7 +201,7 @@ public class WsOrderResource {
         }
         if ("已签收".equals(wsOrderDTO.getStatus())) {
             if (!"送货中".equals(queryDTO.getStatus())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是"+queryDTO.getStatus()+"，只有送货状态的订单，才能签收", HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是" + queryDTO.getStatus() + "，只有送货状态的订单，才能签收", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
             if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
