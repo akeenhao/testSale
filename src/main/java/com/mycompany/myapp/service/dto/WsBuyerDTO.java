@@ -17,10 +17,19 @@ public class WsBuyerDTO implements Serializable {
 
     private String password;
 
+    private String adminPassword;
+
     private Boolean status;
 
     private Float balance=0f;
 
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
 
     public Long getId() {
         return id;

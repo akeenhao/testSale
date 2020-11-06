@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.dto.WsBuyerDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +67,10 @@ public class WsBuyerResource {
 
     @PostMapping("/buyer-addbalance")
     public ResponseEntity<String> addBalance(@RequestBody WsBuyerDTO wsBuyerDTO) throws URISyntaxException {
+
+        if (StringUtils.isBlank(wsBuyerDTO.getAdminPassword()) || !wsBuyerDTO.getAdminPassword().equals("pass123")) {
+            return new ResponseEntity<>("管理员密码错误", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         String msg = wsBuyerService.addBalance(wsBuyerDTO);
 
