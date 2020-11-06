@@ -1,14 +1,12 @@
 package com.mycompany.myapp.config;
 
-import com.mycompany.myapp.security.*;
-import com.mycompany.myapp.security.jwt.*;
-
-import org.springframework.context.annotation.Bean;
+import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.security.jwt.JWTConfigurer;
+import com.mycompany.myapp.security.jwt.TokenProvider;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -53,7 +51,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .and()
             .authorizeRequests()
             .antMatchers("/api/authenticate").permitAll()
-            .antMatchers("/api/salers").permitAll()
+            .antMatchers(HttpMethod.POST,"/api/ws-buyers").permitAll()
+            .antMatchers(HttpMethod.POST,"/api/ws-stores").permitAll()
 //            .antMatchers("/api/**").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()

@@ -1,23 +1,30 @@
 package com.mycompany.myapp.service.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
  * A DTO for the {@link com.mycompany.myapp.domain.WsOrderDetails} entity.
  */
 public class WsOrderDetailsDTO implements Serializable {
-
+    @ApiModelProperty(value = "订单明细id", required = false)
     private Long id;
 
+    @ApiModelProperty(value = "订单id", required = false)
     private Long orderId;
 
+    @ApiModelProperty(value = "商品id", required = false)
     private Long productId;
+    @ApiModelProperty(value = "商品名", required = false)
     private String productName;
 
+    @ApiModelProperty(value = "商品价格", required = false)
     private Float price;
 
 //    private String status;
 
+    @ApiModelProperty(value = "商品数量", required = false)
     private Float num;
 
     public String getProductName() {

@@ -1,5 +1,7 @@
 package com.mycompany.myapp.service.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,26 +11,35 @@ import java.util.List;
  * A DTO for the {@link com.mycompany.myapp.domain.WsOrder} entity.
  */
 public class WsOrderDTO implements Serializable {
-
+    @ApiModelProperty(value = "订单id", required = false)
     private Long id;
 
+    @ApiModelProperty(value = "买家id", required = false)
     private Long buyerId;
+    @ApiModelProperty(value = "买家姓名", required = false)
     private String buyerName;
+    @ApiModelProperty(value = "买家地址", required = false)
     private String buyerAddr;
+    @ApiModelProperty(value = "买家电话", required = false)
     private String buyerTel;
+    @ApiModelProperty(value = "卖家id", required = false)
     private Long storeId;
+    @ApiModelProperty(value = "卖家名", required = false)
     private String storeName;
 
 //    private Long parkerId;
 
+    @ApiModelProperty(value = "总金额", required = false)
     private Float totalPrice;
 
+    @ApiModelProperty(value = "订单状态", required = false)
     private String status;
 
     private Date createTime;
 
     private Date updateTime;
 
+    @ApiModelProperty(value = "订单明细", required = false)
     private List<WsOrderDetailsDTO> details;
 
 
