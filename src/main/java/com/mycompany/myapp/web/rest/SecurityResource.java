@@ -51,7 +51,8 @@ public class SecurityResource {
 
     @PostMapping("/authenticate")
     @Timed
-    public ResponseEntity<String> authorize(@RequestBody UserDTO loginUser) {
+    public ResponseEntity<UserDTO> authorize(@RequestBody UserDTO loginUser) {
+        UserDTO res = new UserDTO();
 
         String userName = loginUser.getPhone();
         String phone = loginUser.getPhone();
@@ -62,22 +63,28 @@ public class SecurityResource {
             WsBuyer wsBuyer = wsBuyerRepository.findByPhone(phone);
             if (null == wsBuyer) {
                 err = "手机号不存在！";
-                return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+                res.setMsg(err);
+                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             if (StringUtils.isNotBlank(wsBuyer.getPassword()) && !wsBuyer.getPassword().equals(password)) {
                 err = "密码错误！";
-                return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+                res.setMsg(err);
+                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            res.setId(wsBuyer.getId());
         } else {
             WsStore wsStore = wsStoreRepository.findByPhone(phone);
             if (null == wsStore) {
                 err = "手机号不存在！";
-                return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+                res.setMsg(err);
+                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             if (StringUtils.isNotBlank(wsStore.getPassword()) && !wsStore.getPassword().equals(password)) {
                 err = "密码错误！";
-                return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
+                res.setMsg(err);
+                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            res.setId(wsStore.getId());
         }
 
 
@@ -90,7 +97,11 @@ public class SecurityResource {
         String jwt = tokenProvider.createToken(authentication, rememberMe);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
+
+        res.setMsg("登陆成功");
+        res.setToken(jwt);
+        res.setBuyerFlag(loginUser.isBuyerFlag());
+        return new ResponseEntity<>(res, httpHeaders, HttpStatus.OK);
     }
 
 }

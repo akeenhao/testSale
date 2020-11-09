@@ -1,5 +1,8 @@
 package com.mycompany.myapp.service.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,32 +12,52 @@ import java.math.BigDecimal;
  */
 public class WsStoreDTO implements Serializable {
 
+    @ApiModelProperty(value = "门店id", required = false)
     private Long id;
 
+    @NotNull(message = "门店名不能为空")
+    @ApiModelProperty(value = "门店名", required = false)
     private String name;
 
+    @NotNull(message = "店主不能为空")
+    @ApiModelProperty(value = "门店店主名", required = false)
     private String personName;
 
+    @NotNull(message = "店主电话不能为空")
+    @ApiModelProperty(value = "门店店主电话", required = false)
     private String phone;
 
+    @NotNull(message = "店主地址不能为空")
+    @ApiModelProperty(value = "门店地址", required = false)
     private String address;
 
+    @ApiModelProperty(value = "门店当前余额", required = false)
     private BigDecimal balance = BigDecimal.ZERO;
 
+    @ApiModelProperty(value = "门店当前状态", required = false)
     private Boolean status;
 
+    @ApiModelProperty(value = "门店照片", required = false)
     private String picture;
 
+    @NotNull(message = "登陆密码不能为空")
+    @ApiModelProperty(value = "登陆密码", required = false)
     private String password;
 
+    @ApiModelProperty(value = "订单总数", required = false)
     private Integer totalOrderNum;
 
+    @ApiModelProperty(value = "门店评分", required = false)
     private Integer point = 0;
 
+    @ApiModelProperty(value = "开店日期", required = false)
     private Instant openTime;
 
+    @NotNull(message = "门店区域不能为空")
+    @ApiModelProperty(value = "门店区域", required = false)
     private Long areaId;
 
+    @ApiModelProperty(value = "门店区域名称", required = false)
     private String areaName;
 
     public String getPassword() {

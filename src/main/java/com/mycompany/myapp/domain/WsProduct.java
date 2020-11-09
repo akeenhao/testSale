@@ -15,8 +15,7 @@ public class WsProduct implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -42,6 +41,9 @@ public class WsProduct implements Serializable {
 
     @Column(name = "point")
     private Integer point;
+
+    @Column(name = "del_flag")
+    private boolean delFlag;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -143,6 +145,14 @@ public class WsProduct implements Serializable {
         this.totalSalesNum = totalSalesNum;
     }
 
+    public boolean isDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(boolean delFlag) {
+        this.delFlag = delFlag;
+    }
+
     public Integer getPoint() {
         return point;
     }
@@ -173,19 +183,19 @@ public class WsProduct implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "WsProduct{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", picture='" + getPicture() + "'" +
-            ", storeId=" + getStoreId() +
-            ", price=" + getPrice() +
-            ", unit='" + getUnit() + "'" +
-            ", remark='" + getRemark() + "'" +
-            ", totalSalesNum=" + getTotalSalesNum() +
-            ", point=" + getPoint() +
-            "}";
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", picture='" + picture + '\'' +
+            ", storeId=" + storeId +
+            ", price=" + price +
+            ", unit='" + unit + '\'' +
+            ", remark='" + remark + '\'' +
+            ", totalSalesNum=" + totalSalesNum +
+            ", point=" + point +
+            ", delFlag=" + delFlag +
+            '}';
     }
 }

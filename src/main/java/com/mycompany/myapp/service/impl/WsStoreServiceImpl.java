@@ -46,12 +46,13 @@ public class WsStoreServiceImpl implements WsStoreService {
         wsStore = wsStoreRepository.save(wsStore);
         return wsStoreMapper.toDto(wsStore);
     }
- @Override
+
+    @Override
     public WsStoreDTO insert(WsStoreDTO wsStoreDTO) throws Exception {
         log.debug("Request to save WsStore : {}", wsStoreDTO);
 
         WsStore wsStore = wsStoreRepository.findByPhone(wsStoreDTO.getPhone());
-        if (null!=wsStore){
+        if (null != wsStore) {
             Exception e = new Exception("手机号已存在！");
             throw e;
         }
@@ -93,8 +94,13 @@ public class WsStoreServiceImpl implements WsStoreService {
     @Transactional(readOnly = true)
     public Optional<WsStoreDTO> findOne(Long id) {
         log.debug("Request to get WsStore : {}", id);
-        return wsStoreRepository.findById(id)
-            .map(wsStoreMapper::toDto);
+
+        Optional<WsStoreDTO> wsStoreDTOOptional = wsStoreRepository.findById(id).map(wsStoreMapper::toDto);
+        WsStoreDTO e = wsStoreDTOOptional.get();
+
+        Optional<WsAreaDTO> wsAreaDTO = wsAreaService.findOne(e.getAreaId());
+        e.setAreaName(wsAreaDTO.isPresent() ? wsAreaDTO.get().getName() : "");
+        return wsStoreDTOOptional;
     }
 
     @Override

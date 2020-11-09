@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -92,7 +91,7 @@ public class WsProductResource {
     @GetMapping("/ws-products")
     public ResponseEntity<List<WsProductDTO>> getAllWsProducts(Pageable pageable) {
         log.debug("REST request to get a page of WsProducts");
-        Page<WsProductDTO> page = wsProductService.findAll(pageable);
+        Page<WsProductDTO> page = wsProductService.findAllByStore(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -100,7 +99,7 @@ public class WsProductResource {
     @GetMapping("/ws-products-byStoreId/{storeId}")
     public ResponseEntity<Page<WsProductDTO>> getAllWsProductsByStoreId(@PathVariable Long storeId, Pageable pageable) {
         log.debug("REST request to get a page of WsProducts");
-        Page<WsProductDTO> page = wsProductService.findAll(storeId,pageable);
+        Page<WsProductDTO> page = wsProductService.findAllByStore(storeId,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
     }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class WsBuyerServiceImpl implements WsBuyerService {
     }
 
     @Override
-    public WsBuyerDTO insert(WsBuyerDTO wsBuyerDTO) throws Exception {
+    public WsBuyerDTO insert(@Valid WsBuyerDTO wsBuyerDTO) throws Exception {
         log.debug("Request to save WsBuyer : {}", wsBuyerDTO);
 
         if (null == wsBuyerDTO.getId()) {

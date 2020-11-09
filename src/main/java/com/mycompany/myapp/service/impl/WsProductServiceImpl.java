@@ -49,7 +49,7 @@ public class WsProductServiceImpl implements WsProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<WsProductDTO> findAll(Pageable pageable) {
+    public Page<WsProductDTO> findAllByStore(Pageable pageable) {
         log.debug("Request to get all WsProducts");
         Page<WsProductDTO> wsProductDTOPage = wsProductRepository.findAll(pageable)
             .map(wsProductMapper::toDto);
@@ -61,7 +61,7 @@ public class WsProductServiceImpl implements WsProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<WsProductDTO> findAll(Long storeId, Pageable pageable) {
+    public Page<WsProductDTO> findAllByStore(Long storeId, Pageable pageable) {
         log.debug("Request to get all WsProducts");
         Page<WsProductDTO> wsProductDTOPage = wsProductRepository.findAllByStoreId(storeId, pageable)
             .map(wsProductMapper::toDto);
@@ -84,8 +84,13 @@ public class WsProductServiceImpl implements WsProductService {
     @Transactional(readOnly = true)
     public Optional<WsProductDTO> findOne(Long id) {
         log.debug("Request to get WsProduct : {}", id);
-        return wsProductRepository.findById(id)
-            .map(wsProductMapper::toDto);
+
+        Optional<WsProductDTO> wsProductDTOOptional = wsProductRepository.findById(id).map(wsProductMapper::toDto);
+
+
+        wsProductDTOOptional.get().setStoreName(wsStoreService.findOne(wsProductDTOOptional.get().getStoreId()).get().getName());
+
+        return wsProductDTOOptional;
     }
 
     @Override

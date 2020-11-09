@@ -8,12 +8,12 @@ import java.util.Objects;
  */
 public class UserDTO implements Serializable {
 
+    private Long id;
     private String phone;
-
-
     private String password;
-
     private boolean buyerFlag = false;
+    private String token;
+    private String msg;
 
     public boolean isBuyerFlag() {
         return buyerFlag;
@@ -21,6 +21,31 @@ public class UserDTO implements Serializable {
 
     public void setBuyerFlag(boolean buyerFlag) {
         this.buyerFlag = buyerFlag;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     @Override
@@ -58,9 +83,12 @@ public class UserDTO implements Serializable {
     @Override
     public String toString() {
         return "UserDTO{" +
-            "phone='" + phone + '\'' +
+            "id=" + id +
+            ", phone='" + phone + '\'' +
             ", password='" + password + '\'' +
-            ", isBuyer=" + buyerFlag +
+            ", buyerFlag=" + buyerFlag +
+            ", token='" + token + '\'' +
+            ", msg='" + msg + '\'' +
             '}';
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -51,7 +52,7 @@ public class WsStoreResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-stores")
-    public ResponseEntity<String> createWsStore(@RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
+    public ResponseEntity<String> createWsStore(@Valid @RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
         log.debug("REST request to save WsStore : {}", wsStoreDTO);
         if (wsStoreDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsStore cannot already have an ID", ENTITY_NAME, "idexists");

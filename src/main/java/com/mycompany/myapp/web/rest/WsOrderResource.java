@@ -9,6 +9,7 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,8 +128,9 @@ public class WsOrderResource {
                 return res;
             }
 
+
             // 减去对应余额
-            WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
+            WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(queryDTO.getBuyerId()).get();
             Float priceTotal = 0F;
             List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
             for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
@@ -139,6 +141,13 @@ public class WsOrderResource {
                 }
                 priceTotal += wsProductDTO.getPrice() * detail.getNum();
             }
+
+
+            if (wsBuyerDTO.getBalance() < priceTotal) {
+                ResponseEntity res = new ResponseEntity("余额不足，总价" + priceTotal + "元", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+
             wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() - priceTotal);
             wsBuyerService.save(wsBuyerDTO);
 
@@ -176,7 +185,7 @@ public class WsOrderResource {
                 priceTotal += wsProductDTO.getPrice() * detail.getNum();
             }
 
-            WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
+            WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(queryDTO.getBuyerId()).get();
             // 加上对应余额
             wsBuyerDTO.setBalance(wsBuyerDTO.getBalance() + priceTotal);
             wsBuyerService.save(wsBuyerDTO);
@@ -204,8 +213,8 @@ public class WsOrderResource {
                 ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）当前状态是" + queryDTO.getStatus() + "，只有送货状态的订单，才能签收", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
-            if (!wsOrderDTO.getStoreId().equals(queryDTO.getStoreId())) {
-                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）不是你家的订单，无法去送货", HttpStatus.INTERNAL_SERVER_ERROR);
+            if (!wsOrderDTO.getBuyerId().equals(queryDTO.getBuyerId())) {
+                ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）不是你的订单，无法签收", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
 
@@ -286,7 +295,10 @@ public class WsOrderResource {
     }
 
     @GetMapping("/ws-orders-byBuyerAndStatus")
-    public ResponseEntity<Page<WsOrderDTO>> getAllWsOrdersByBuyerAndStatus(Long buyerId, String orderType, Pageable pageable) {
+    public ResponseEntity<Page<WsOrderDTO>> getAllWsOrdersByBuyerAndStatus(
+        @ApiParam(value = "buyerId", name = "买家id") @RequestParam(required = false) Long buyerId,
+        @ApiParam(value = "orderType", name = "订单状态") @RequestParam(required = false) String orderType,
+        Pageable pageable) {
         log.debug("REST request to get a page of WsOrders");
 
         Page<WsOrderDTO> page;

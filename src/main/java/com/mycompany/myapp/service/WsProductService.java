@@ -26,8 +26,8 @@ public interface WsProductService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    Page<WsProductDTO> findAll(Pageable pageable);
-    Page<WsProductDTO> findAll(Long storeId,Pageable pageable);
+    Page<WsProductDTO> findAllByStore(Pageable pageable);
+    Page<WsProductDTO> findAllByStore(Long storeId, Pageable pageable);
 
 
     /**
