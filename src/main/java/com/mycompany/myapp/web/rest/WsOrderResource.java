@@ -222,6 +222,7 @@ public class WsOrderResource {
             List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
             for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
                 priceTotal += detail.getPrice() * detail.getNum();
+                wsProductService.addSalesNum(detail.getProductId(),queryDTO.getStoreId());
             }
             wsStoreService.addBalance(queryDTO.getStoreId(), BigDecimal.valueOf(priceTotal));
         }

@@ -44,4 +44,6 @@ public interface WsProductService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    void addSalesNum(Long productId, Long storeId);
 }

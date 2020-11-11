@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.WsArea;
 import com.mycompany.myapp.service.WsAreaService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.service.dto.WsAreaDTO;
@@ -90,11 +91,23 @@ public class WsAreaResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsAreas in body.
      */
     @GetMapping("/ws-areas")
-    public ResponseEntity<List<WsAreaDTO>> getAllWsAreas(Pageable pageable) {
+    public ResponseEntity<Page<WsAreaDTO>> getAllWsAreas(Pageable pageable) {
         log.debug("REST request to get a page of WsAreas");
         Page<WsAreaDTO> page = wsAreaService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
+    /**
+     * {@code GET  /ws-areas-all} : get all the wsAreas.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsAreas in body.
+     */
+    @GetMapping("/ws-areas-all")
+    public ResponseEntity<List<WsArea>> getAllWsAreas() {
+        log.debug("REST request to get a page of WsAreas");
+        List<WsArea> wsAreas = wsAreaService.findAll();
+        return ResponseEntity.ok().body(wsAreas);
     }
 
     /**

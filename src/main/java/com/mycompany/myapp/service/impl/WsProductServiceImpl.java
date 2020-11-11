@@ -98,4 +98,10 @@ public class WsProductServiceImpl implements WsProductService {
         log.debug("Request to delete WsProduct : {}", id);
         wsProductRepository.deleteById(id);
     }
+
+    @Override
+    public void addSalesNum(Long productId, Long storeId){
+        log.debug("Request to addSalesNum WsProduct : product:{} store:{}", productId,storeId);
+        wsProductRepository.addSalesNum(productId,storeId);
+    }
 }
