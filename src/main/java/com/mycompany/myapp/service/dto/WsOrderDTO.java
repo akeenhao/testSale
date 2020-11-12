@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.Column;
@@ -32,11 +33,17 @@ public class WsOrderDTO implements Serializable {
     @ApiModelProperty(value = "总金额", required = false)
     private Float totalPrice;
 
-    @ApiModelProperty(value = "订单状态", required = false)
+    @ApiModelProperty(value = "订单状态（未付款、等待商家接单、取消、删除、备货中、送货中、已签收）", required = false)
     private String status;
+    @ApiModelProperty(value = "备注", required = false)
+    private String remark;
 
+    @ApiModelProperty(value = "创建时间", required = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
+    @ApiModelProperty(value = "更新时间", required = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     @ApiModelProperty(value = "订单明细", required = false)
@@ -122,6 +129,15 @@ public class WsOrderDTO implements Serializable {
     public void setBuyerId(Long buyerId) {
         this.buyerId = buyerId;
     }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
 /*
     public Long getParkerId() {
         return parkerId;
@@ -170,11 +186,15 @@ public class WsOrderDTO implements Serializable {
             "id=" + id +
             ", buyerId=" + buyerId +
             ", buyerName='" + buyerName + '\'' +
+            ", buyerAddr='" + buyerAddr + '\'' +
+            ", buyerTel='" + buyerTel + '\'' +
             ", storeId=" + storeId +
             ", storeName='" + storeName + '\'' +
-//            ", parkerId=" + parkerId +
             ", totalPrice=" + totalPrice +
             ", status='" + status + '\'' +
+            ", remark='" + remark + '\'' +
+            ", createTime=" + createTime +
+            ", updateTime=" + updateTime +
             ", details=" + details +
             '}';
     }

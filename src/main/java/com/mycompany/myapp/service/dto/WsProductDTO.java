@@ -44,7 +44,7 @@ public class WsProductDTO implements Serializable {
     @ApiModelProperty(value = "评分", required = false)
     private Integer point;
 
-    @ApiModelProperty(value = "删除标识", required = false)
+    @ApiModelProperty(value = "下架标识", required = false)
     private boolean delFlag;
 
 

@@ -20,6 +20,7 @@ public interface WsStoreService {
      * @return the persisted entity.
      */
     WsStoreDTO save(WsStoreDTO wsStoreDTO);
+
     WsStoreDTO insert(WsStoreDTO wsStoreDTO) throws Exception;
 
     /**
@@ -31,7 +32,9 @@ public interface WsStoreService {
     Page<WsStoreDTO> findAll(Pageable pageable);
 
     Page<WsStoreDTO> findAll(Long areaId, Pageable pageable);
+
     Page<WsStoreDTO> findAll(String name, Pageable pageable);
+
     Page<WsStoreDTO> findAll(Long areaId, String name, Pageable pageable);
 
 
@@ -53,4 +56,6 @@ public interface WsStoreService {
     void addBalance(Long id, BigDecimal money);
 
     void subBalance(Long id, BigDecimal money);
+
+    void remove(Long id);
 }

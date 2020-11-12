@@ -26,8 +26,8 @@ import java.util.Optional;
 /**
  * REST controller for managing {@link com.mycompany.myapp.domain.WsOrderDetails}.
  */
-@RestController
-@RequestMapping("/api")
+//@RestController
+//@RequestMapping("/api")
 public class WsOrderDetailsResource {
 
     private final Logger log = LoggerFactory.getLogger(WsOrderDetailsResource.class);

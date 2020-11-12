@@ -34,6 +34,9 @@ public class WsOrder implements Serializable {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "remark")
+    private String remark;
+
 
     @Column(name = "create_time")
     private Date createTime;
@@ -128,6 +131,15 @@ public class WsOrder implements Serializable {
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -150,9 +162,9 @@ public class WsOrder implements Serializable {
             "id=" + id +
             ", buyerId=" + buyerId +
             ", storeId=" + storeId +
-//            ", parkerId=" + parkerId +
             ", totalPrice=" + totalPrice +
             ", status='" + status + '\'' +
+            ", remark='" + remark + '\'' +
             ", createTime=" + createTime +
             ", updateTime=" + updateTime +
             '}';

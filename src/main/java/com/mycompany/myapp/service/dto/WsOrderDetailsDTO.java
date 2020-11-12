@@ -16,6 +16,7 @@ public class WsOrderDetailsDTO implements Serializable {
 
     @ApiModelProperty(value = "商品id", required = false)
     private Long productId;
+
     @ApiModelProperty(value = "商品名", required = false)
     private String productName;
 

@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
@@ -35,7 +36,7 @@ public class WsStoreDTO implements Serializable {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @ApiModelProperty(value = "门店当前状态", required = false)
-    private Boolean status;
+    private Boolean status = true;
 
     @ApiModelProperty(value = "门店照片", required = false)
     private String picture;
@@ -45,13 +46,14 @@ public class WsStoreDTO implements Serializable {
     private String password;
 
     @ApiModelProperty(value = "订单总数", required = false)
-    private Integer totalOrderNum;
+    private Integer totalOrderNum = 0;
 
     @ApiModelProperty(value = "门店评分", required = false)
     private Integer point = 0;
 
     @ApiModelProperty(value = "开店日期", required = false)
-    private Instant openTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Instant openTime = Instant.now();
 
     @NotNull(message = "门店区域不能为空")
     @ApiModelProperty(value = "门店区域", required = false)

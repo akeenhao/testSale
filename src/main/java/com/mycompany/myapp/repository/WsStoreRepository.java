@@ -35,5 +35,10 @@ public interface WsStoreRepository extends JpaRepository<WsStore, Long> {
     @Query(value = "update WsStore set balance=balance - ?2 where id = ?1")
     void subBalance(@Param("id") Long id, @Param("money") BigDecimal money);
 
+    @Transactional
+    @Modifying
+    @Query(value = "update WsStore set status = false where id = ?1")
+    void remove(@Param("id") Long id);
+
     WsStore findByPhone(String phone);
 }

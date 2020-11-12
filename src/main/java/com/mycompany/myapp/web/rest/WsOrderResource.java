@@ -9,6 +9,7 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,13 +69,22 @@ public class WsOrderResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-orders")
-    public ResponseEntity<String> createWsOrder(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
+    @ApiOperation(value = "下单或更新老订单后下单", notes = "下单或更新老订单后下单")
+    public ResponseEntity<String> createOrUpdateWsOrder(@ApiParam(value = "wsOrderDTO", name = "订单详情") @RequestBody WsOrderDTO wsOrderDTO) {
 
         wsOrderDTO.setCreateTime(new Date());
         wsOrderDTO.setUpdateTime(new Date());
         log.debug("REST request to save WsOrder : {}", wsOrderDTO);
         if (wsOrderDTO.getId() != null) {
-            throw new BadRequestAlertException("A new wsOrder cannot have an ID", ENTITY_NAME, "idexists");
+            Optional<WsOrderDTO> queryRes = wsOrderService.findOne(wsOrderDTO.getId());
+            WsOrderDTO queryDTO = queryRes.get();
+            if (!"未付款".equals(queryDTO.getStatus()) && !"等待商家接单".equals(queryDTO.getStatus())) {
+                ResponseEntity res = new ResponseEntity("商家已开始处理此订单，不能修改订单了，如果需要添加商品，请下新的订单", HttpStatus.INTERNAL_SERVER_ERROR);
+                return res;
+            }
+
+            wsOrderService.delete(wsOrderDTO.getId());
+            wsOrderDetailsService.deleteByOrderId(wsOrderDTO.getId());
         }
         // 校验余额是否足够
         WsBuyerDTO wsBuyerDTO = wsBuyerService.findOne(wsOrderDTO.getBuyerId()).get();
@@ -112,8 +122,9 @@ public class WsOrderResource {
         return res;
     }
 
+    @ApiOperation(value = "处理订单（更新状态）", notes = "处理订单（更新状态）")
     @PostMapping("/updateWsOrderState")
-    public ResponseEntity<String> updateWsOrderState(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
+    public ResponseEntity<String> updateWsOrderState(@ApiParam(value = "wsOrderDTO", name = "订单详情（id、状态、卖家id必填）") @RequestBody WsOrderDTO wsOrderDTO) {
         log.debug("REST request to save WsOrder : {}", wsOrderDTO);
         if (wsOrderDTO.getId() == null) {
             throw new BadRequestAlertException("A new wsOrder must have an ID", ENTITY_NAME, "id");
@@ -170,7 +181,7 @@ public class WsOrderResource {
             }
         }
         if ("取消".equals(wsOrderDTO.getStatus())) {
-            if (!"等待商家接单".equals(queryDTO.getStatus())) {
+            if (!"未付款".equals(queryDTO.getStatus()) && !"等待商家接单".equals(queryDTO.getStatus())) {
                 ResponseEntity res = new ResponseEntity("此订单（" + wsOrderDTO.getId() + "）商家已接单，在处理中，无法取消", HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
@@ -222,7 +233,7 @@ public class WsOrderResource {
             List<WsOrderDetailsDTO> wsOrderDetailsDTOS = wsOrderDetailsService.findAllByOrderId(wsOrderDTO.getId());
             for (WsOrderDetailsDTO detail : wsOrderDetailsDTOS) {
                 priceTotal += detail.getPrice() * detail.getNum();
-                wsProductService.addSalesNum(detail.getProductId(),queryDTO.getStoreId());
+                wsProductService.addSalesNum(detail.getProductId(), queryDTO.getStoreId());
             }
             wsStoreService.addBalance(queryDTO.getStoreId(), BigDecimal.valueOf(priceTotal));
         }
@@ -244,7 +255,7 @@ public class WsOrderResource {
      * or with status {@code 500 (Internal Server Error)} if the wsOrderDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/ws-orders")
+//    @PutMapping("/ws-orders")
     public ResponseEntity<WsOrderDTO> updateWsOrder(@RequestBody WsOrderDTO wsOrderDTO) throws URISyntaxException {
         log.debug("REST request to update WsOrder : {}", wsOrderDTO);
         if (wsOrderDTO.getId() == null) {
@@ -263,6 +274,7 @@ public class WsOrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsOrders in body.
      */
     @GetMapping("/ws-orders")
+    @ApiOperation(value = "分页查询订单", notes = "分页查询订单")
     public ResponseEntity<Page<WsOrderDTO>> getAllWsOrders(Pageable pageable) {
         log.debug("REST request to get a page of WsOrders");
         Page<WsOrderDTO> page = wsOrderService.findAll(pageable);
@@ -275,7 +287,11 @@ public class WsOrderResource {
 
 
     @GetMapping("/ws-orders-byStoreAndStatus")
-    public ResponseEntity<Page<WsOrderDTO>> getAllWsOrdersByStoreAndStatus(Long storeId, String orderType, Pageable pageable) {
+    @ApiOperation(value = "分页查询订单，根据门店和订单状态", notes = "分页查询订单，根据门店和订单状态")
+    public ResponseEntity<Page<WsOrderDTO>> getAllWsOrdersByStoreAndStatus(
+        @ApiParam(value = "storeId", name = "门店id") Long storeId,
+        @ApiParam(value = "orderType", name = "订单状态（未付款、等待商家接单、取消、删除、备货中、送货中、已签收）") String orderType,
+        Pageable pageable) {
         log.debug("REST request to get a page of WsOrders");
 
         Page<WsOrderDTO> page;
@@ -296,9 +312,10 @@ public class WsOrderResource {
     }
 
     @GetMapping("/ws-orders-byBuyerAndStatus")
+    @ApiOperation(value = "分页查询订单，根据买家和订单状态", notes = "分页查询订单，根据买家和订单状态")
     public ResponseEntity<Page<WsOrderDTO>> getAllWsOrdersByBuyerAndStatus(
         @ApiParam(value = "buyerId", name = "买家id") @RequestParam(required = false) Long buyerId,
-        @ApiParam(value = "orderType", name = "订单状态") @RequestParam(required = false) String orderType,
+        @ApiParam(value = "orderType", name = "订单状态（未付款、等待商家接单、取消、删除、备货中、送货中、已签收）") @RequestParam(required = false) String orderType,
         Pageable pageable) {
         log.debug("REST request to get a page of WsOrders");
 
@@ -326,7 +343,8 @@ public class WsOrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the wsOrderDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/ws-orders/{id}")
-    public ResponseEntity<WsOrderDTO> getWsOrder(@PathVariable Long id) {
+    @ApiOperation(value = "查询单个订单详情", notes = "查询单个订单详情")
+    public ResponseEntity<WsOrderDTO> getWsOrder(@ApiParam(value = "订单id", name = "订单id") @PathVariable Long id) {
         log.debug("REST request to get WsOrder : {}", id);
         Optional<WsOrderDTO> wsOrderDTO = wsOrderService.findOne(id);
         wsOrderDTO.get().setStoreName(wsStoreService.findOne(wsOrderDTO.get().getStoreId()).get().getName());
@@ -351,7 +369,7 @@ public class WsOrderResource {
      * @param id the id of the wsOrderDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/ws-orders/{id}")
+//    @DeleteMapping("/ws-orders/{id}")
     public ResponseEntity<Void> deleteWsOrder(@PathVariable Long id) {
         log.debug("REST request to delete WsOrder : {}", id);
         wsOrderService.delete(id);

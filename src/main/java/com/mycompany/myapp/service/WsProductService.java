@@ -40,6 +40,7 @@ public interface WsProductService {
      * @return the entity.
      */
     Optional<WsProductDTO> findOne(Long id);
+    void remove(Long id);
 
     /**
      * Delete the "id" wsProduct.

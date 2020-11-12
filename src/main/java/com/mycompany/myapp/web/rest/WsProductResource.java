@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.dto.WsProductDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,8 @@ public class WsProductResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-products")
-    public ResponseEntity<WsProductDTO> createWsProduct(@RequestBody WsProductDTO wsProductDTO) throws URISyntaxException {
+    @ApiOperation(value = "创建商品", notes = "创建商品")
+    public ResponseEntity<WsProductDTO> createWsProduct(@ApiParam(value = "wsProductDTO", name = "商品具体参数") @RequestBody WsProductDTO wsProductDTO) throws URISyntaxException {
         log.debug("REST request to save WsProduct : {}", wsProductDTO);
         if (wsProductDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsProduct cannot already have an ID", ENTITY_NAME, "idexists");
@@ -72,7 +74,8 @@ public class WsProductResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/ws-products")
-    public ResponseEntity<WsProductDTO> updateWsProduct(@RequestBody WsProductDTO wsProductDTO) throws URISyntaxException {
+    @ApiOperation(value = "更新商品", notes = "更新商品")
+    public ResponseEntity<WsProductDTO> updateWsProduct(@ApiParam(value = "wsProductDTO", name = "商品具体参数") @RequestBody WsProductDTO wsProductDTO) throws URISyntaxException {
         log.debug("REST request to update WsProduct : {}", wsProductDTO);
         if (wsProductDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -90,22 +93,24 @@ public class WsProductResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsProducts in body.
      */
     @GetMapping("/ws-products")
-    public ResponseEntity<List<WsProductDTO>> getAllWsProducts(Pageable pageable) {
+    @ApiOperation(value = "分页查询商品", notes = "分页查询商品")
+    public ResponseEntity<Page<WsProductDTO>> getAllWsProducts(Pageable pageable) {
         log.debug("REST request to get a page of WsProducts");
         Page<WsProductDTO> page = wsProductService.findAllByStore(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().headers(headers).body(page);
     }
 
+    @ApiOperation(value = "分页查询单个门店下的商品", notes = "分页查询单个门店下的商品")
     @GetMapping("/ws-products-byStoreId/{storeId}")
-    public ResponseEntity<Page<WsProductDTO>> getAllWsProductsByStoreId(@PathVariable Long storeId, Pageable pageable) {
+    public ResponseEntity<Page<WsProductDTO>> getAllWsProductsByStoreId(@ApiParam(value = "storeId", name = "门店id") @PathVariable Long storeId, Pageable pageable) {
         log.debug("REST request to get a page of WsProducts");
         Page<WsProductDTO> page = wsProductService.findAllByStore(storeId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
     }
 
-
+    @ApiOperation(value = "分页查询商品（按名称和价格范围）", notes = "分页查询商品")
     @GetMapping("/ws-products-byParam")
     public ResponseEntity<Page<WsProductDTO>> getAllWsProducts(
         @ApiParam(value = "name", name = "名称") @RequestParam(required = false) String name,
@@ -128,7 +133,8 @@ public class WsProductResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the wsProductDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/ws-products/{id}")
-    public ResponseEntity<WsProductDTO> getWsProduct(@PathVariable Long id) {
+    @ApiOperation(value = "查询单个商品", notes = "查询单个商品")
+    public ResponseEntity<WsProductDTO> getWsProduct(@ApiParam(value = "id", name = "商品id") @PathVariable Long id) {
         log.debug("REST request to get WsProduct : {}", id);
         Optional<WsProductDTO> wsProductDTO = wsProductService.findOne(id);
         return ResponseUtil.wrapOrNotFound(wsProductDTO);
@@ -140,10 +146,11 @@ public class WsProductResource {
      * @param id the id of the wsProductDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @ApiOperation(value = "商品下架", notes = "商品下架")
     @DeleteMapping("/ws-products/{id}")
-    public ResponseEntity<Void> deleteWsProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteWsProduct(@ApiParam(value = "id", name = "商品id")@PathVariable Long id) {
         log.debug("REST request to delete WsProduct : {}", id);
-        wsProductService.delete(id);
+        wsProductService.remove(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

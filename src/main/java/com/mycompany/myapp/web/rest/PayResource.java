@@ -37,7 +37,7 @@ public class PayResource {
     @Autowired
     PaymentService paymentService;
 
-    @GetMapping("/pay")
+//    @GetMapping("/pay")
     public  void pay(Pageable pageable) throws UnsupportedEncodingException {
 
         String remoteAddr = "";

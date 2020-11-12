@@ -33,10 +33,10 @@ public class WsStore implements Serializable {
     private String address;
 
     @Column(name = "balance", precision = 21, scale = 2)
-    private BigDecimal balance;
+    private BigDecimal balance=BigDecimal.ZERO;
 
     @Column(name = "status")
-    private Boolean status;
+    private boolean status = true;
 
     @Column(name = "picture")
     private String picture;
@@ -45,13 +45,13 @@ public class WsStore implements Serializable {
     private String password;
 
     @Column(name = "total_order_num")
-    private Integer totalOrderNum;
+    private Integer totalOrderNum=0;
 
     @Column(name = "point")
-    private Integer point;
+    private Integer point=0;
 
     @Column(name = "open_time")
-    private Instant openTime;
+    private Instant openTime=Instant.now();
 
     @Column(name = "area_id")
     private Long areaId;
@@ -93,6 +93,14 @@ public class WsStore implements Serializable {
     public WsStore personName(String personName) {
         this.personName = personName;
         return this;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public void setPersonName(String personName) {
@@ -138,18 +146,6 @@ public class WsStore implements Serializable {
         this.balance = balance;
     }
 
-    public Boolean isStatus() {
-        return status;
-    }
-
-    public WsStore status(Boolean status) {
-        this.status = status;
-        return this;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
 
     public String getPicture() {
         return picture;
@@ -233,23 +229,22 @@ public class WsStore implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "WsStore{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", personName='" + getPersonName() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", balance=" + getBalance() +
-            ", status='" + isStatus() + "'" +
-            ", picture='" + getPicture() + "'" +
-            ", totalOrderNum=" + getTotalOrderNum() +
-            ", point=" + getPoint() +
-            ", openTime='" + getOpenTime() + "'" +
-            ", areaId=" + getAreaId() +
-            "}";
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", personName='" + personName + '\'' +
+            ", phone='" + phone + '\'' +
+            ", address='" + address + '\'' +
+            ", balance=" + balance +
+            ", status=" + status +
+            ", picture='" + picture + '\'' +
+            ", password='" + password + '\'' +
+            ", totalOrderNum=" + totalOrderNum +
+            ", point=" + point +
+            ", openTime=" + openTime +
+            ", areaId=" + areaId +
+            '}';
     }
 }

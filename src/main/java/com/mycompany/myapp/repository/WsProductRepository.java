@@ -32,4 +32,9 @@ public interface WsProductRepository extends JpaRepository<WsProduct, Long> {
     @Modifying
     @Query(value = "update WsProduct set totalOrderNum=totalOrderNum+1 where id = ?1 and storeId= ?2")
     void addSalesNum(@Param("productId") Long productId, @Param("storeId") Long storeId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update WsProduct set delFlag=true where id = ?1 ")
+    void remove(@Param("productId") Long productId);
 }

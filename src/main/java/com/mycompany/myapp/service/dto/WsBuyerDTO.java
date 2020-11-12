@@ -1,26 +1,35 @@
 package com.mycompany.myapp.service.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
  * A DTO for the {@link com.mycompany.myapp.domain.WsBuyer} entity.
  */
 public class WsBuyerDTO implements Serializable {
-
+    @ApiModelProperty(value = "买家id", required = false)
     private Long id;
 
+    @ApiModelProperty(value = "买家名称", required = false)
     private String name;
 
+    @ApiModelProperty(value = "买家手机号", required = false)
     private String phone;
 
+    @ApiModelProperty(value = "买家地址", required = false)
     private String address;
 
+    @ApiModelProperty(value = "买家密码", required = false)
     private String password;
 
+    @ApiModelProperty(value = "管理员密码", required = false)
     private String adminPassword;
 
+    @ApiModelProperty(value = "状态（暂时不用）", required = false)
     private Boolean status;
 
+    @ApiModelProperty(value = "买家余额（充值时作为充值金额使用）", required = false)
     private Float balance=0f;
 
     public String getAdminPassword() {

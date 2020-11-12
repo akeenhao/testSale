@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.dto.WsStoreDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,8 @@ public class WsStoreResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-stores")
-    public ResponseEntity<String> createWsStore(@Valid @RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
+    @ApiOperation(value = "创建门店", notes = "创建门店")
+    public ResponseEntity<String> createWsStore(@ApiParam(value = "wsStoreDTO", name = "门店信息") @Valid @RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
         log.debug("REST request to save WsStore : {}", wsStoreDTO);
         if (wsStoreDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsStore cannot already have an ID", ENTITY_NAME, "idexists");
@@ -78,7 +80,8 @@ public class WsStoreResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/ws-stores")
-    public ResponseEntity<WsStoreDTO> updateWsStore(@RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
+    @ApiOperation(value = "更新门店", notes = "更新门店")
+    public ResponseEntity<WsStoreDTO> updateWsStore(@ApiParam(value = "wsStoreDTO", name = "门店信息") @RequestBody WsStoreDTO wsStoreDTO) throws URISyntaxException {
         log.debug("REST request to update WsStore : {}", wsStoreDTO);
         if (wsStoreDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -96,6 +99,7 @@ public class WsStoreResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsStores in body.
      */
     @GetMapping("/ws-stores")
+    @ApiOperation(value = "分页获取门店列表", notes = "分页获取门店列表")
     public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(Pageable pageable) {
         log.debug("REST request to get a page of WsStores");
         Page<WsStoreDTO> page = wsStoreService.findAll(pageable);
@@ -104,7 +108,11 @@ public class WsStoreResource {
     }
 
     @GetMapping("/ws-stores-byAreaId/{areaId}")
-    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(Pageable pageable, @PathVariable Long areaId) {
+    @ApiOperation(value = "分页获取某区域下的门店列表", notes = "分页获取某区域下的门店列表")
+    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(
+        Pageable pageable,
+        @ApiParam(value = "areaId", name = "区域id") @PathVariable Long areaId) {
+
         log.debug("REST request to get a page of WsStores");
         Page<WsStoreDTO> page = wsStoreService.findAll(areaId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -112,6 +120,7 @@ public class WsStoreResource {
     }
 
     @GetMapping("/ws-stores-byName")
+    @ApiOperation(value = "分页获取的门店列表（按名称模糊查询）", notes = "分页获取的门店列表（按名称模糊查询）")
     public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(
         @ApiParam(value = "name", name = "门店名称") @RequestParam(required = false) String name,
         Pageable pageable) {
@@ -122,6 +131,7 @@ public class WsStoreResource {
     }
 
     @GetMapping("/ws-stores-byParam")
+    @ApiOperation(value = "分页获取某区域下的门店列表（按名称模糊查询）", notes = "分页获取某区域下的门店列表（按名称模糊查询）")
     public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(
         @ApiParam(value = "name", name = "门店名称") @RequestParam(required = false) String name,
         @ApiParam(value = "areaId", name = "区域id") @RequestParam(required = false) Long areaId,
@@ -132,7 +142,7 @@ public class WsStoreResource {
             HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
             return ResponseEntity.ok().headers(headers).body(page);
         } else {
-            Page<WsStoreDTO> page = wsStoreService.findAll(areaId,"%" + name + "%", pageable);
+            Page<WsStoreDTO> page = wsStoreService.findAll(areaId, "%" + name + "%", pageable);
             HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
             return ResponseEntity.ok().headers(headers).body(page);
         }
@@ -146,7 +156,8 @@ public class WsStoreResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the wsStoreDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/ws-stores/{id}")
-    public ResponseEntity<WsStoreDTO> getWsStore(@PathVariable Long id) {
+    @ApiOperation(value = "获取某个门店的详细信息", notes = "获取某个门店的详细信息")
+    public ResponseEntity<WsStoreDTO> getWsStore(@ApiParam(value = "id", name = "门店id") @PathVariable Long id) {
         log.debug("REST request to get WsStore : {}", id);
         Optional<WsStoreDTO> wsStoreDTO = wsStoreService.findOne(id);
         return ResponseUtil.wrapOrNotFound(wsStoreDTO);
@@ -159,9 +170,10 @@ public class WsStoreResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/ws-stores/{id}")
-    public ResponseEntity<Void> deleteWsStore(@PathVariable Long id) {
+    @ApiOperation(value = "注销门店", notes = "注销门店")
+    public ResponseEntity<Void> deleteWsStore(@ApiParam(value = "id", name = "门店id") @PathVariable Long id) {
         log.debug("REST request to delete WsStore : {}", id);
-        wsStoreService.delete(id);
+        wsStoreService.remove(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

@@ -8,6 +8,8 @@ import com.mycompany.myapp.service.dto.WsAreaDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +54,8 @@ public class WsAreaResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/ws-areas")
-    public ResponseEntity<WsAreaDTO> createWsArea(@RequestBody WsAreaDTO wsAreaDTO) throws URISyntaxException {
+    @ApiOperation(value = "创建区域", notes = "创建区域")
+    public ResponseEntity<WsAreaDTO> createWsArea(@ApiParam(value = "wsAreaDTO", name = "区域信息") @RequestBody WsAreaDTO wsAreaDTO) throws URISyntaxException {
         log.debug("REST request to save WsArea : {}", wsAreaDTO);
         if (wsAreaDTO.getId() != null) {
             throw new BadRequestAlertException("A new wsArea cannot already have an ID", ENTITY_NAME, "idexists");
@@ -72,8 +75,9 @@ public class WsAreaResource {
      * or with status {@code 500 (Internal Server Error)} if the wsAreaDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @ApiOperation(value = "更新区域", notes = "更新区域")
     @PutMapping("/ws-areas")
-    public ResponseEntity<WsAreaDTO> updateWsArea(@RequestBody WsAreaDTO wsAreaDTO) throws URISyntaxException {
+    public ResponseEntity<WsAreaDTO> updateWsArea(@ApiParam(value = "wsAreaDTO", name = "区域信息") @RequestBody WsAreaDTO wsAreaDTO) throws URISyntaxException {
         log.debug("REST request to update WsArea : {}", wsAreaDTO);
         if (wsAreaDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -90,6 +94,7 @@ public class WsAreaResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsAreas in body.
      */
+    @ApiOperation(value = "分页获取区域", notes = "分页获取区域")
     @GetMapping("/ws-areas")
     public ResponseEntity<Page<WsAreaDTO>> getAllWsAreas(Pageable pageable) {
         log.debug("REST request to get a page of WsAreas");
@@ -103,6 +108,7 @@ public class WsAreaResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of wsAreas in body.
      */
+    @ApiOperation(value = "获取全部区域", notes = "获取全部区域")
     @GetMapping("/ws-areas-all")
     public ResponseEntity<List<WsArea>> getAllWsAreas() {
         log.debug("REST request to get a page of WsAreas");
@@ -116,8 +122,9 @@ public class WsAreaResource {
      * @param id the id of the wsAreaDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the wsAreaDTO, or with status {@code 404 (Not Found)}.
      */
+    @ApiOperation(value = "获取单个区域详情", notes = "获取单个区域详情")
     @GetMapping("/ws-areas/{id}")
-    public ResponseEntity<WsAreaDTO> getWsArea(@PathVariable Long id) {
+    public ResponseEntity<WsAreaDTO> getWsArea(@ApiParam(value = "id", name = "区域id")@PathVariable Long id) {
         log.debug("REST request to get WsArea : {}", id);
         Optional<WsAreaDTO> wsAreaDTO = wsAreaService.findOne(id);
         return ResponseUtil.wrapOrNotFound(wsAreaDTO);
@@ -129,8 +136,9 @@ public class WsAreaResource {
      * @param id the id of the wsAreaDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @ApiOperation(value = "删除单个区域", notes = "删除单个区域")
     @DeleteMapping("/ws-areas/{id}")
-    public ResponseEntity<Void> deleteWsArea(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteWsArea(@ApiParam(value = "id", name = "区域id")@PathVariable Long id) {
         log.debug("REST request to delete WsArea : {}", id);
         wsAreaService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();

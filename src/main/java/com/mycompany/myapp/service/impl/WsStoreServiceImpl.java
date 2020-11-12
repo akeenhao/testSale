@@ -133,4 +133,8 @@ public class WsStoreServiceImpl implements WsStoreService {
     public void subBalance(Long id, BigDecimal money) {
         wsStoreRepository.subBalance(id, money);
     }
+    @Override
+    public void remove(Long id) {
+        wsStoreRepository.remove(id);
+    }
 }

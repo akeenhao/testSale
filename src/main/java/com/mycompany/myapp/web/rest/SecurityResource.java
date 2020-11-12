@@ -11,6 +11,8 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.dto.WsBuyerDTO;
 import com.mycompany.myapp.service.util.PaymentService;
 import io.micrometer.core.annotation.Timed;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +52,9 @@ public class SecurityResource {
     WsStoreRepository wsStoreRepository;
 
     @PostMapping("/authenticate")
+    @ApiOperation(value = "登陆", notes = "登陆")
     @Timed
-    public ResponseEntity<UserDTO> authorize(@RequestBody UserDTO loginUser) {
+    public ResponseEntity<UserDTO> authorize(@ApiParam(value = "loginUser", name = "登陆用户信息") @RequestBody UserDTO loginUser) {
         UserDTO res = new UserDTO();
 
         String userName = loginUser.getPhone();
