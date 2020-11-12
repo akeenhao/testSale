@@ -17,7 +17,16 @@ import java.math.BigDecimal;
 @SuppressWarnings("unused")
 @Repository
 public interface WsProductRepository extends JpaRepository<WsProduct, Long> {
+
     Page<WsProduct> findAllByStoreId(Long storeId, Pageable pageable);
+
+    Page<WsProduct> findAllByNameLike(String name, Pageable pageable);
+
+    Page<WsProduct> findAllByNameLikeAndPriceLessThanEqual(String name, Float maxPrice, Pageable pageable);
+
+    Page<WsProduct> findAllByNameLikeAndPriceGreaterThanEqual(String name, Float minPrice, Pageable pageable);
+
+    Page<WsProduct> findAllByNameLikeAndPriceGreaterThanEqualAndPriceLessThanEqual(String name, Float minPrice, Float maxPrice, Pageable pageable);
 
     @Transactional
     @Modifying

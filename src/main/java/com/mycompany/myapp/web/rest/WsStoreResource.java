@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.dto.WsStoreDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,6 +109,34 @@ public class WsStoreResource {
         Page<WsStoreDTO> page = wsStoreService.findAll(areaId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
+    }
+
+    @GetMapping("/ws-stores-byName")
+    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(
+        @ApiParam(value = "name", name = "门店名称") @RequestParam(required = false) String name,
+        Pageable pageable) {
+        log.debug("REST request to get a page of WsStores");
+        Page<WsStoreDTO> page = wsStoreService.findAll("%" + name + "%", pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+    }
+
+    @GetMapping("/ws-stores-byParam")
+    public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(
+        @ApiParam(value = "name", name = "门店名称") @RequestParam(required = false) String name,
+        @ApiParam(value = "areaId", name = "区域id") @RequestParam(required = false) Long areaId,
+        Pageable pageable) {
+        log.debug("REST request to get a page of WsStores");
+        if (null == areaId) {
+            Page<WsStoreDTO> page = wsStoreService.findAll("%" + name + "%", pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page);
+        } else {
+            Page<WsStoreDTO> page = wsStoreService.findAll(areaId,"%" + name + "%", pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page);
+        }
+
     }
 
     /**

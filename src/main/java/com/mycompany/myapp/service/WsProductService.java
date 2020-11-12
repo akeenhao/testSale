@@ -27,7 +27,10 @@ public interface WsProductService {
      * @return the list of entities.
      */
     Page<WsProductDTO> findAllByStore(Pageable pageable);
+
     Page<WsProductDTO> findAllByStore(Long storeId, Pageable pageable);
+
+    Page<WsProductDTO> findAll(String name, Float minPrice, Float maxPrice, Pageable pageable);
 
 
     /**

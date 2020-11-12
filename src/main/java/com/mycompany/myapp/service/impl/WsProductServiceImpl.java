@@ -70,7 +70,35 @@ public class WsProductServiceImpl implements WsProductService {
         return wsProductDTOPage;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<WsProductDTO> findAll(String name, Float minPrice, Float maxPrice, Pageable pageable) {
+        log.debug("Request to get all WsProducts");
+        Page<WsProductDTO> wsProductDTOPage = null;
+        if (null != minPrice && null != maxPrice) {
+            wsProductDTOPage = wsProductRepository.findAllByNameLikeAndPriceGreaterThanEqualAndPriceLessThanEqual(name, minPrice, maxPrice, pageable)
+                .map(wsProductMapper::toDto);
+        }
+        if (null != minPrice && null == maxPrice) {
+            wsProductDTOPage = wsProductRepository.findAllByNameLikeAndPriceGreaterThanEqual(name, minPrice, pageable)
+                .map(wsProductMapper::toDto);
+        }
+        if (null == minPrice && null != maxPrice) {
+            wsProductDTOPage = wsProductRepository.findAllByNameLikeAndPriceLessThanEqual(name, maxPrice, pageable)
+                .map(wsProductMapper::toDto);
+        }
+        if (null == minPrice && null == maxPrice) {
+            wsProductDTOPage = wsProductRepository.findAllByNameLike(name, pageable)
+                .map(wsProductMapper::toDto);
+        }
+
+        setStoreName(wsProductDTOPage);
+
+        return wsProductDTOPage;
+    }
+
     private void setStoreName(Page<WsProductDTO> wsProductDTOPage) {
+        if (null == wsProductDTOPage) return;
         wsProductDTOPage.getContent().forEach(e -> {
             Optional<WsStoreDTO> wsStoreDTO = wsStoreService.findOne(e.getStoreId());
             if (wsStoreDTO.isPresent()) {
@@ -100,8 +128,8 @@ public class WsProductServiceImpl implements WsProductService {
     }
 
     @Override
-    public void addSalesNum(Long productId, Long storeId){
-        log.debug("Request to addSalesNum WsProduct : product:{} store:{}", productId,storeId);
-        wsProductRepository.addSalesNum(productId,storeId);
+    public void addSalesNum(Long productId, Long storeId) {
+        log.debug("Request to addSalesNum WsProduct : product:{} store:{}", productId, storeId);
+        wsProductRepository.addSalesNum(productId, storeId);
     }
 }

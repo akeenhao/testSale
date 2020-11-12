@@ -22,6 +22,8 @@ import java.util.List;
 @Repository
 public interface WsStoreRepository extends JpaRepository<WsStore, Long> {
     Page<WsStore> findAllByAreaId(Long areaId, Pageable pageable);
+    Page<WsStore> findAllByNameLike(String name, Pageable pageable);
+    Page<WsStore> findAllByAreaIdAndNameLike(Long areaId,String name, Pageable pageable);
 
     @Transactional
     @Modifying

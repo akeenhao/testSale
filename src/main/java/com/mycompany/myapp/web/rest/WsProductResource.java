@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.dto.WsProductDTO;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,10 +100,26 @@ public class WsProductResource {
     @GetMapping("/ws-products-byStoreId/{storeId}")
     public ResponseEntity<Page<WsProductDTO>> getAllWsProductsByStoreId(@PathVariable Long storeId, Pageable pageable) {
         log.debug("REST request to get a page of WsProducts");
-        Page<WsProductDTO> page = wsProductService.findAllByStore(storeId,pageable);
+        Page<WsProductDTO> page = wsProductService.findAllByStore(storeId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
     }
+
+
+    @GetMapping("/ws-products-byParam")
+    public ResponseEntity<Page<WsProductDTO>> getAllWsProducts(
+        @ApiParam(value = "name", name = "名称") @RequestParam(required = false) String name,
+        @ApiParam(value = "minPrice", name = "最小金额") @RequestParam(required = false) Float minPrice,
+        @ApiParam(value = "maxPrice", name = "最大金额") @RequestParam(required = false) Float maxPrice,
+        Pageable pageable) {
+        log.debug("REST request to get a page of WsStores");
+
+        Page<WsProductDTO> page = wsProductService.findAll("%" + name + "%", minPrice, maxPrice, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page);
+
+    }
+
 
     /**
      * {@code GET  /ws-products/:id} : get the "id" wsProduct.
