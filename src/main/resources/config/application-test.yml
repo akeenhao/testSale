@@ -21,7 +21,7 @@ logging:
 
 spring:
   profiles:
-    active: dev
+    active: test
     include:
       - swagger
       # Uncomment to activate TLS for the dev profile
@@ -44,13 +44,9 @@ spring:
 #    password: password
 #    driverClassName:  com.mysql.cj.jdbc.Driver
     driverClassName:  com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
-    username: root
-    password:
-#    driverClassName:  com.mysql.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/sale?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
-#    username: sale
-#    password: p1234
+    url: jdbc:mysql://123.57.68.158:3306/sale?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
+    username: sale
+    password: p1234
 
 
     hikari:

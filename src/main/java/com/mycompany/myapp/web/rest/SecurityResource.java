@@ -7,8 +7,11 @@ import com.mycompany.myapp.repository.WsStoreRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.jwt.JWTFilter;
 import com.mycompany.myapp.security.jwt.TokenProvider;
+import com.mycompany.myapp.service.WsBuyerService;
+import com.mycompany.myapp.service.WsStoreService;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.dto.WsBuyerDTO;
+import com.mycompany.myapp.service.dto.WsStoreDTO;
 import com.mycompany.myapp.service.util.PaymentService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +50,11 @@ public class SecurityResource {
     @Autowired
     TokenProvider tokenProvider;
     @Autowired
+    WsBuyerService wsBuyerService;
+    @Autowired
     WsBuyerRepository wsBuyerRepository;
+    @Autowired
+    WsStoreService wsStoreService;
     @Autowired
     WsStoreRepository wsStoreRepository;
 
@@ -57,43 +64,42 @@ public class SecurityResource {
     public ResponseEntity<UserDTO> authorize(@ApiParam(value = "loginUser", name = "登陆用户信息") @RequestBody UserDTO loginUser) {
         UserDTO res = new UserDTO();
 
-        String userName = loginUser.getPhone();
-        String phone = loginUser.getPhone();
-        String password = loginUser.getPassword();
+        String openid = loginUser.getOpenid();
 
-        String err = "";
         if (loginUser.isBuyerFlag()) {
-            WsBuyer wsBuyer = wsBuyerRepository.findByPhone(phone);
+            WsBuyer wsBuyer = wsBuyerRepository.findByOpenid(openid);
             if (null == wsBuyer) {
-                err = "手机号不存在！";
-                res.setMsg(err);
-                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+                WsBuyerDTO wsBuyerDTO = new WsBuyerDTO();
+                wsBuyerDTO.setOpenid(openid);
+                try {
+                    res.setId(wsBuyerService.insert(wsBuyerDTO).getId());
+                } catch (Exception e) {
+                    res.setMsg(e.getMessage());
+                    return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }else {
+                res.setId(wsBuyer.getId());
             }
-            if (StringUtils.isNotBlank(wsBuyer.getPassword()) && !wsBuyer.getPassword().equals(password)) {
-                err = "密码错误！";
-                res.setMsg(err);
-                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            res.setId(wsBuyer.getId());
         } else {
-            WsStore wsStore = wsStoreRepository.findByPhone(phone);
+            WsStore wsStore = wsStoreRepository.findByOpenid(openid);
             if (null == wsStore) {
-                err = "手机号不存在！";
-                res.setMsg(err);
-                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+                WsStoreDTO wsStoreDTO = new WsStoreDTO();
+                wsStoreDTO.setOpenid(openid);
+                try {
+                    res.setId(wsStoreService.insert(wsStoreDTO).getId());
+                } catch (Exception e) {
+                    res.setMsg(e.getMessage());
+                    return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }else {
+                res.setId(wsStore.getId());
             }
-            if (StringUtils.isNotBlank(wsStore.getPassword()) && !wsStore.getPassword().equals(password)) {
-                err = "密码错误！";
-                res.setMsg(err);
-                return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            res.setId(wsStore.getId());
         }
 
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            userName,
-            password,
+            openid,
+            openid,
             Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
         );
         boolean rememberMe = false;

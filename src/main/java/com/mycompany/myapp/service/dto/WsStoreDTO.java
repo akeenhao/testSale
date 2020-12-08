@@ -15,6 +15,8 @@ public class WsStoreDTO implements Serializable {
 
     @ApiModelProperty(value = "门店id", required = false)
     private Long id;
+    @ApiModelProperty(value = "openid", required = false)
+    private String openid;
 
     @NotNull(message = "门店名不能为空")
     @ApiModelProperty(value = "门店名", required = false)
@@ -55,12 +57,26 @@ public class WsStoreDTO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant openTime = Instant.now();
 
-    @NotNull(message = "门店区域不能为空")
-    @ApiModelProperty(value = "门店区域", required = false)
-    private Long areaId;
+    @ApiModelProperty(value = "经度", required = false)
+    private Float longitude;
+    @ApiModelProperty(value = "纬度", required = false)
+    private Float latitude;
 
-    @ApiModelProperty(value = "门店区域名称", required = false)
-    private String areaName;
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
+
+    public Float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
 
     public String getPassword() {
         return password;
@@ -68,14 +84,6 @@ public class WsStoreDTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getAreaName() {
-        return areaName;
-    }
-
-    public void setAreaName(String areaName) {
-        this.areaName = areaName;
     }
 
     public Long getId() {
@@ -88,6 +96,14 @@ public class WsStoreDTO implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public void setName(String name) {
@@ -166,13 +182,6 @@ public class WsStoreDTO implements Serializable {
         this.openTime = openTime;
     }
 
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -192,22 +201,26 @@ public class WsStoreDTO implements Serializable {
     }
 
     // prettier-ignore
+
+
     @Override
     public String toString() {
         return "WsStoreDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", personName='" + getPersonName() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", balance=" + getBalance() +
-            ", status='" + isStatus() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", picture='" + getPicture() + "'" +
-            ", totalOrderNum=" + getTotalOrderNum() +
-            ", point=" + getPoint() +
-            ", openTime='" + getOpenTime() + "'" +
-            ", areaId=" + getAreaId() +
-            "}";
+            "id=" + id +
+            ", openid='" + openid + '\'' +
+            ", name='" + name + '\'' +
+            ", personName='" + personName + '\'' +
+            ", phone='" + phone + '\'' +
+            ", address='" + address + '\'' +
+            ", balance=" + balance +
+            ", status=" + status +
+            ", picture='" + picture + '\'' +
+            ", password='" + password + '\'' +
+            ", totalOrderNum=" + totalOrderNum +
+            ", point=" + point +
+            ", openTime=" + openTime +
+            ", longitude=" + longitude +
+            ", latitude=" + latitude +
+            '}';
     }
 }

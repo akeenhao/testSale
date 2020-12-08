@@ -31,11 +31,11 @@ public interface WsStoreService {
      */
     Page<WsStoreDTO> findAll(Pageable pageable);
 
-    Page<WsStoreDTO> findAll(Long areaId, Pageable pageable);
+//    Page<WsStoreDTO> findAll(Long areaId, Pageable pageable);
 
     Page<WsStoreDTO> findAll(String name, Pageable pageable);
 
-    Page<WsStoreDTO> findAll(Long areaId, String name, Pageable pageable);
+//    Page<WsStoreDTO> findAll(Long areaId, String name, Pageable pageable);
 
 
     /**

@@ -23,6 +23,9 @@ public class WsStore implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "openid")
+    private String openid;
+
     @Column(name = "person_name")
     private String personName;
 
@@ -53,8 +56,27 @@ public class WsStore implements Serializable {
     @Column(name = "open_time")
     private Instant openTime=Instant.now();
 
-    @Column(name = "area_id")
-    private Long areaId;
+    @Column(name = "longitude")
+    private Float longitude;
+
+    @Column(name = "latitude")
+    private Float latitude;
+
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
+    }
+
+    public Float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -80,6 +102,14 @@ public class WsStore implements Serializable {
     public WsStore name(String name) {
         this.name = name;
         return this;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public void setName(String name) {
@@ -199,20 +229,6 @@ public class WsStore implements Serializable {
         this.openTime = openTime;
     }
 
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public WsStore areaId(Long areaId) {
-        this.areaId = areaId;
-        return this;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -234,6 +250,7 @@ public class WsStore implements Serializable {
         return "WsStore{" +
             "id=" + id +
             ", name='" + name + '\'' +
+            ", openid='" + openid + '\'' +
             ", personName='" + personName + '\'' +
             ", phone='" + phone + '\'' +
             ", address='" + address + '\'' +
@@ -244,7 +261,8 @@ public class WsStore implements Serializable {
             ", totalOrderNum=" + totalOrderNum +
             ", point=" + point +
             ", openTime=" + openTime +
-            ", areaId=" + areaId +
+            ", longitude=" + longitude +
+            ", latitude=" + latitude +
             '}';
     }
 }

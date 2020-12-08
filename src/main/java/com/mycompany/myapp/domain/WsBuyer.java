@@ -18,6 +18,9 @@ public class WsBuyer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "openid")
+    private String openid;
+
     @Column(name = "name")
     private String name;
 
@@ -101,6 +104,14 @@ public class WsBuyer implements Serializable {
         return this;
     }
 
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
     public void setStatus(Boolean status) {
         this.status = status;
     }
@@ -135,17 +146,17 @@ public class WsBuyer implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "WsBuyer{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", status='" + isStatus() + "'" +
-            ", balance=" + getBalance() +
-            "}";
+            "id=" + id +
+            ", openid='" + openid + '\'' +
+            ", name='" + name + '\'' +
+            ", phone='" + phone + '\'' +
+            ", address='" + address + '\'' +
+            ", status=" + status +
+            ", password='" + password + '\'' +
+            ", balance=" + balance +
+            '}';
     }
 }

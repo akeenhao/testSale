@@ -5,6 +5,7 @@ import com.mycompany.myapp.domain.WsBuyer;
 import com.mycompany.myapp.repository.WsBuyerRepository;
 import com.mycompany.myapp.service.dto.WsBuyerDTO;
 import com.mycompany.myapp.service.mapper.WsBuyerMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class WsBuyerServiceImpl implements WsBuyerService {
     public WsBuyerDTO insert(@Valid WsBuyerDTO wsBuyerDTO) throws Exception {
         log.debug("Request to save WsBuyer : {}", wsBuyerDTO);
 
-        if (null == wsBuyerDTO.getId()) {
+        if (null == wsBuyerDTO.getId()&&StringUtils.isNotBlank(wsBuyerDTO.getPhone())) {
             WsBuyer wsBuyer = wsBuyerRepository.findByPhone(wsBuyerDTO.getPhone());
             if (null != wsBuyer) {
                 Exception e = new Exception("手机号已存在！");

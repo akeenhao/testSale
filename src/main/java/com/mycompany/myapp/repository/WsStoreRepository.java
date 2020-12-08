@@ -21,9 +21,9 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Repository
 public interface WsStoreRepository extends JpaRepository<WsStore, Long> {
-    Page<WsStore> findAllByAreaId(Long areaId, Pageable pageable);
+//    Page<WsStore> findAllByAreaId(Long areaId, Pageable pageable);
     Page<WsStore> findAllByNameLike(String name, Pageable pageable);
-    Page<WsStore> findAllByAreaIdAndNameLike(Long areaId,String name, Pageable pageable);
+//    Page<WsStore> findAllByAreaIdAndNameLike(Long areaId,String name, Pageable pageable);
 
     @Transactional
     @Modifying
@@ -41,4 +41,5 @@ public interface WsStoreRepository extends JpaRepository<WsStore, Long> {
     void remove(@Param("id") Long id);
 
     WsStore findByPhone(String phone);
+    WsStore findByOpenid(String openid);
 }

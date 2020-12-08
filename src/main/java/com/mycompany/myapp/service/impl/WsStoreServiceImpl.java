@@ -7,6 +7,7 @@ import com.mycompany.myapp.repository.WsStoreRepository;
 import com.mycompany.myapp.service.dto.WsAreaDTO;
 import com.mycompany.myapp.service.dto.WsStoreDTO;
 import com.mycompany.myapp.service.mapper.WsStoreMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +52,20 @@ public class WsStoreServiceImpl implements WsStoreService {
     public WsStoreDTO insert(WsStoreDTO wsStoreDTO) throws Exception {
         log.debug("Request to save WsStore : {}", wsStoreDTO);
 
-        WsStore wsStore = wsStoreRepository.findByPhone(wsStoreDTO.getPhone());
-        if (null != wsStore) {
-            Exception e = new Exception("手机号已存在！");
+        if (StringUtils.isNotBlank(wsStoreDTO.getPhone())) {
+            WsStore wsStore = wsStoreRepository.findByPhone(wsStoreDTO.getPhone());
+            if (null != wsStore) {
+                Exception e = new Exception("手机号已存在！");
+                throw e;
+            }
+            wsStore = wsStoreMapper.toEntity(wsStoreDTO);
+            wsStore = wsStoreRepository.save(wsStore);
+            return wsStoreMapper.toDto(wsStore);
+        } else {
+            Exception e = new Exception("手机号不能为空！");
             throw e;
         }
 
-        wsStore = wsStoreMapper.toEntity(wsStoreDTO);
-        wsStore = wsStoreRepository.save(wsStore);
-        return wsStoreMapper.toDto(wsStore);
     }
 
     @Override
@@ -68,34 +74,36 @@ public class WsStoreServiceImpl implements WsStoreService {
         log.debug("Request to get all WsStores");
         Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAll(pageable).map(wsStoreMapper::toDto);
 
-        setAreaName(wsStoreDTOPage);
+//        setAreaName(wsStoreDTOPage);
         return wsStoreDTOPage;
     }
 
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
     public Page<WsStoreDTO> findAll(Long areaId, Pageable pageable) {
         log.debug("Request to get all WsStores");
         Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAllByAreaId(areaId, pageable).map(wsStoreMapper::toDto);
 
-        setAreaName(wsStoreDTOPage);
+//        setAreaName(wsStoreDTOPage);
         return wsStoreDTOPage;
-    }
+    }*/
 
     @Override
     public Page<WsStoreDTO> findAll(String name, Pageable pageable) {
         log.debug("Request to get all WsStores");
         Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAllByNameLike(name, pageable).map(wsStoreMapper::toDto);
-        setAreaName(wsStoreDTOPage);
+//        setAreaName(wsStoreDTOPage);
         return wsStoreDTOPage;
     }
-    @Override
-    public Page<WsStoreDTO> findAll(Long areaId,String name, Pageable pageable) {
+
+   /* @Override
+    public Page<WsStoreDTO> findAll(Long areaId, String name, Pageable pageable) {
         log.debug("Request to get all WsStores");
-        Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAllByAreaIdAndNameLike(areaId,name, pageable).map(wsStoreMapper::toDto);
-        setAreaName(wsStoreDTOPage);
+        Page<WsStoreDTO> wsStoreDTOPage = wsStoreRepository.findAllByAreaIdAndNameLike(areaId, name, pageable).map(wsStoreMapper::toDto);
+//        setAreaName(wsStoreDTOPage);
         return wsStoreDTOPage;
-    }
+    }*/
+/*
 
     private void setAreaName(Page<WsStoreDTO> wsStoreDTOPage) {
         wsStoreDTOPage.getContent().forEach(e -> {
@@ -103,6 +111,7 @@ public class WsStoreServiceImpl implements WsStoreService {
             e.setAreaName(wsAreaDTO.isPresent() ? wsAreaDTO.get().getName() : "");
         });
     }
+*/
 
 
     @Override
@@ -113,8 +122,8 @@ public class WsStoreServiceImpl implements WsStoreService {
         Optional<WsStoreDTO> wsStoreDTOOptional = wsStoreRepository.findById(id).map(wsStoreMapper::toDto);
         WsStoreDTO e = wsStoreDTOOptional.get();
 
-        Optional<WsAreaDTO> wsAreaDTO = wsAreaService.findOne(e.getAreaId());
-        e.setAreaName(wsAreaDTO.isPresent() ? wsAreaDTO.get().getName() : "");
+//        Optional<WsAreaDTO> wsAreaDTO = wsAreaService.findOne(e.getAreaId());
+//        e.setAreaName(wsAreaDTO.isPresent() ? wsAreaDTO.get().getName() : "");
         return wsStoreDTOOptional;
     }
 
@@ -133,6 +142,7 @@ public class WsStoreServiceImpl implements WsStoreService {
     public void subBalance(Long id, BigDecimal money) {
         wsStoreRepository.subBalance(id, money);
     }
+
     @Override
     public void remove(Long id) {
         wsStoreRepository.remove(id);

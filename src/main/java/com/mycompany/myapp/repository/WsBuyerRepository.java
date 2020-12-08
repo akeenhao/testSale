@@ -25,4 +25,6 @@ public interface WsBuyerRepository extends JpaRepository<WsBuyer, Long> {
     int addBalance(@Param("phone") String phone, @Param("money") Float money);
 
     WsBuyer findByPhone(String phone);
+
+    WsBuyer findByOpenid(String openid);
 }

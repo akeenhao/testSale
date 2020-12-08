@@ -106,7 +106,7 @@ public class WsStoreResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
     }
-
+/*
     @GetMapping("/ws-stores-byAreaId/{areaId}")
     @ApiOperation(value = "分页获取某区域下的门店列表", notes = "分页获取某区域下的门店列表")
     public ResponseEntity<Page<WsStoreDTO>> getAllWsStores(
@@ -117,7 +117,7 @@ public class WsStoreResource {
         Page<WsStoreDTO> page = wsStoreService.findAll(areaId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page);
-    }
+    }*/
 
     @GetMapping("/ws-stores-byName")
     @ApiOperation(value = "分页获取的门店列表（按名称模糊查询）", notes = "分页获取的门店列表（按名称模糊查询）")
@@ -142,7 +142,8 @@ public class WsStoreResource {
             HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
             return ResponseEntity.ok().headers(headers).body(page);
         } else {
-            Page<WsStoreDTO> page = wsStoreService.findAll(areaId, "%" + name + "%", pageable);
+            Page<WsStoreDTO> page = wsStoreService.findAll("%" + name + "%", pageable);
+//            Page<WsStoreDTO> page = wsStoreService.findAll(areaId, "%" + name + "%", pageable);
             HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
             return ResponseEntity.ok().headers(headers).body(page);
         }

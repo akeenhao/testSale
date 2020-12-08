@@ -11,6 +11,9 @@ public class WsBuyerDTO implements Serializable {
     @ApiModelProperty(value = "买家id", required = false)
     private Long id;
 
+    @ApiModelProperty(value = "openid", required = false)
+    private String openid;
+
     @ApiModelProperty(value = "买家名称", required = false)
     private String name;
 
@@ -31,6 +34,15 @@ public class WsBuyerDTO implements Serializable {
 
     @ApiModelProperty(value = "买家余额（充值时作为充值金额使用）", required = false)
     private Float balance=0f;
+
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
 
     public String getAdminPassword() {
         return adminPassword;
@@ -114,16 +126,19 @@ public class WsBuyerDTO implements Serializable {
     }
 
     // prettier-ignore
+
     @Override
     public String toString() {
         return "WsBuyerDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", status='" + isStatus() + "'" +
-            ", balance=" + getBalance() +
-            "}";
+            "id=" + id +
+            ", openid='" + openid + '\'' +
+            ", name='" + name + '\'' +
+            ", phone='" + phone + '\'' +
+            ", address='" + address + '\'' +
+            ", password='" + password + '\'' +
+            ", adminPassword='" + adminPassword + '\'' +
+            ", status=" + status +
+            ", balance=" + balance +
+            '}';
     }
 }

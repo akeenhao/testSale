@@ -13,6 +13,8 @@ public class UserDTO implements Serializable {
     private Long id;
     @ApiModelProperty(value = "手机号", required = false)
     private String phone;
+    @ApiModelProperty(value = "openid", required = false)
+    private String openid;
     @ApiModelProperty(value = "密码", required = false)
     private String password;
     @ApiModelProperty(value = "是否是买家", required = false)
@@ -21,6 +23,14 @@ public class UserDTO implements Serializable {
     private String token;
     @ApiModelProperty(value = "返回信息", required = false)
     private String msg;
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
 
     public boolean isBuyerFlag() {
         return buyerFlag;
@@ -92,6 +102,7 @@ public class UserDTO implements Serializable {
         return "UserDTO{" +
             "id=" + id +
             ", phone='" + phone + '\'' +
+            ", openid='" + openid + '\'' +
             ", password='" + password + '\'' +
             ", buyerFlag=" + buyerFlag +
             ", token='" + token + '\'' +
