@@ -95,6 +95,8 @@ public class WsOrderResource {
                 ResponseEntity res = new ResponseEntity("商品错误：" + detail.getProductId() + "-" + detail.getProductName(), HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
+            // todo 订单价格错误横向检查
+            detail.getPrice();
             priceTotal += wsProductDTO.getPrice() * detail.getNum();
             detail.setPrice(wsProductDTO.getPrice());
         }
