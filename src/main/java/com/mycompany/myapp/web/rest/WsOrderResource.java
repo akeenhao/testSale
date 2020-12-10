@@ -92,13 +92,10 @@ public class WsOrderResource {
         for (WsOrderDetailsDTO detail : wsOrderDTO.getDetails()) {
             WsProductDTO wsProductDTO = wsProductService.findOne(detail.getProductId()).get();
             if (null == wsProductDTO) {
-                ResponseEntity res = new ResponseEntity("商品错误：" + detail.getProductId() + "-" + detail.getProductName(), HttpStatus.INTERNAL_SERVER_ERROR);
+                ResponseEntity res = new ResponseEntity("商品不存在：" + detail.getProductId() + "-" + detail.getProductName(), HttpStatus.INTERNAL_SERVER_ERROR);
                 return res;
             }
-            // todo 订单价格错误横向检查
-            detail.getPrice();
-            priceTotal += wsProductDTO.getPrice() * detail.getNum();
-            detail.setPrice(wsProductDTO.getPrice());
+            priceTotal += detail.getPrice() * detail.getNum();
         }
         wsOrderDTO.setTotalPrice(priceTotal);
         wsOrderDTO.setStatus("未付款");
