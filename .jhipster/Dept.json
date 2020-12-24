@@ -1,0 +1,33 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "test",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "deptName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "deptNo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "editUser",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "editTime",
+      "fieldType": "Instant"
+    }
+  ],
+  "changelogDate": "20201224071909",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "serviceImpl",
+  "entityTableName": "dept",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "test"
+}

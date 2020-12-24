@@ -1,6 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.service.WsAreaService;
+import com.mycompany.myapp.service.dto.DeptDTO;
+import com.mycompany.myapp.service.dto.JsonResult;
 import com.mycompany.myapp.service.dto.WsAreaDTO;
 import com.mycompany.myapp.service.util.PaymentService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,13 +40,26 @@ public class PayResource {
     @Autowired
     PaymentService paymentService;
 
-//    @GetMapping("/pay")
-    public  void pay(Pageable pageable) throws UnsupportedEncodingException {
+    //    @GetMapping("/pay")
+    public void pay(Pageable pageable) throws UnsupportedEncodingException {
 
         String remoteAddr = "";
         String orderNumber = "test123";
         String openid = "test";
-        paymentService.getPayConfig(remoteAddr,orderNumber,openid);
+        paymentService.getPayConfig(remoteAddr, orderNumber, openid);
+    }
+
+    @PostMapping("/Dept/list")
+    public JsonResult<List<DeptDTO>> list() {
+        List<DeptDTO> res = new ArrayList<>();
+        DeptDTO deptDTO = new DeptDTO();
+        deptDTO.setDeptName("test");
+        deptDTO.setDeptNo("123");
+        deptDTO.setEditUser("testuser");
+        res.add(deptDTO);
+        return JsonResult.get(res);
+
+
     }
 
 }
