@@ -1,0 +1,45 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "test",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "v1",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "v2",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "v3",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "v4",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "v5",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "v6",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "v7",
+      "fieldType": "Integer"
+    }
+  ],
+  "changelogDate": "20210106065449",
+  "dto": "mapstruct",
+  "searchEngine": false,
+  "service": "serviceImpl",
+  "entityTableName": "data_record",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination",
+  "microserviceName": "test"
+}

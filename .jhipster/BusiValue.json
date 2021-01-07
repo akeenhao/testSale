@@ -1,0 +1,29 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "test",
+  "relationships": [],
+  "fields": [
+    {
+      "fieldName": "day",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "v",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "c",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20210107055139",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "serviceImpl",
+  "entityTableName": "busi_value",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "no",
+  "microserviceName": "test"
+}
