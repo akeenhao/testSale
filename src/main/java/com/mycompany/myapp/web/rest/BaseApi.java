@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mycompany.myapp.domain.BusiValue;
+import com.mycompany.myapp.repository.BusiValueRepository;
 import com.mycompany.myapp.service.BusiValueService;
 import com.mycompany.myapp.service.dto.BusiInfo;
 import com.mycompany.myapp.service.dto.SingleBusi;
@@ -22,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @RestController
@@ -29,7 +31,115 @@ public class BaseApi {
 
     @Autowired
     private BusiValueService busiValueService;
+    @Autowired
+    private BusiValueRepository busiValueRepository;
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @GetMapping("/scyRule")
+    public boolean scyRule(String code) {
+
+        List<Float> busiValues =busiValueRepository.getBusiValueByCOrderByDay(code);
+
+        return this.dealRule(busiValues);
+    }
+
+
+    @GetMapping("/dealRule")
+    public boolean dealRule(List<Float> req) {
+        logger.info("getValues");
+
+        int size = req.size();
+
+        List<Float> threeV = new ArrayList<>();
+        List<Float> fiveV = new ArrayList<>();
+        List<Float> tenV = new ArrayList<>();
+        List<Float> tenfV = new ArrayList<>();
+
+        int i = 1;
+        Float vThree = 0f;
+        Float vFive = 0f;
+        Float vTen = 0f;
+        Float vTenF = 0f;
+        for (Float v : req) {
+            vThree += v;
+            if (i % 3 == 0) {
+                threeV.add(vThree / 3);
+                vThree = 0f;
+            }
+            vFive += v;
+            if (i % 5 == 0) {
+                fiveV.add(vFive / 5);
+                vFive = 0f;
+            }
+            vTen += v;
+            if (i % 10 == 0) {
+                tenV.add(vTen / 10);
+                vTen = 0f;
+            }
+            vTenF += v;
+            if (i % 15 == 0) {
+                tenfV.add(vTenF / 10);
+                vTenF = 0f;
+            }
+            i++;
+        }
+
+        int lteNum = 0;
+        int vSize = threeV.size();
+        Float last = 0f;
+        for (Float tv : threeV) {
+            if (last > tv) lteNum++;
+            last = tv;
+        }
+        DecimalFormat df = new DecimalFormat("0.00000");
+        String scale = df.format((float) lteNum / vSize);
+        logger.info("3pline avgSize:{} lteNum:{} scale:{}", vSize, lteNum, scale);
+
+        lteNum = 0;
+        vSize = fiveV.size();
+        last = 0f;
+        for (Float tv : fiveV) {
+            if (last > tv) lteNum++;
+            last = tv;
+        }
+        scale = df.format((float) lteNum / vSize);
+        logger.info("5pline avgSize:{} lteNum:{} scale:{}", vSize, lteNum, scale);
+
+        lteNum = 0;
+        vSize = tenV.size();
+        last = 0f;
+        for (Float tv : tenV) {
+            if (last > tv) lteNum++;
+            last = tv;
+        }
+        scale = df.format((float) lteNum / vSize);
+        logger.info("10pline avgSize:{} lteNum:{} scale:{}", vSize, lteNum, scale);
+
+        lteNum = 0;
+        vSize = tenfV.size();
+        last = 0f;
+        for (Float tv : tenfV) {
+            if (last > tv) lteNum++;
+            last = tv;
+        }
+        scale = df.format((float) lteNum / vSize);
+        logger.info("15pline avgSize:{} lteNum:{} scale:{}", vSize, lteNum, scale);
+
+
+        return false;
+    }
+
+    @GetMapping("/getFValues")
+    public List<Float> getFValues(int size, Float max) {
+        logger.info("getValues");
+        List<Float> res = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < size; i++) {
+            res.add(random.nextFloat() * max);
+        }
+        logger.info("res:{}", res);
+        return res;
+    }
 
     @GetMapping("/getValues")
     public List<Integer> getValues() {
