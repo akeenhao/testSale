@@ -36,16 +36,22 @@ public class BaseApi {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/scyRule")
-    public boolean scyRule(String code) {
+    public boolean scyRule(String code, float sc,int total,int remove) {
 
-        List<Float> busiValues =busiValueRepository.getBusiValueByCOrderByDay(code);
+        List<Float> busiValues = busiValueRepository.getBusiValueByCOrderByDay(code);
 
-        return this.dealRule(busiValues);
+        this.dealRule(busiValues, sc);
+
+        this.dealRule(busiValues.subList((busiValues.size() / total) * remove, busiValues.size()), sc);
+
+
+        return true;
+
     }
 
 
     @GetMapping("/dealRule")
-    public boolean dealRule(List<Float> req) {
+    public boolean dealRule(List<Float> req, float sc) {
         logger.info("getValues");
 
         int size = req.size();
@@ -85,21 +91,33 @@ public class BaseApi {
         }
 
         int lteNum = 0;
-        int vSize = threeV.size();
+        int vSize = req.size();
         Float last = 0f;
-        for (Float tv : threeV) {
-            if (last > tv) lteNum++;
+        for (Float tv : req) {
+            if (last > (tv + tv * sc)) lteNum++;
             last = tv;
         }
         DecimalFormat df = new DecimalFormat("0.00000");
         String scale = df.format((float) lteNum / vSize);
+        logger.info("1pline avgSize:{} lteNum:{} scale:{}", vSize, lteNum, scale);
+
+
+        lteNum = 0;
+        vSize = threeV.size();
+        last = 0f;
+        for (Float tv : threeV) {
+            if (last > (tv + tv * sc)) lteNum++;
+            last = tv;
+        }
+        scale = df.format((float) lteNum / vSize);
         logger.info("3pline avgSize:{} lteNum:{} scale:{}", vSize, lteNum, scale);
 
         lteNum = 0;
         vSize = fiveV.size();
         last = 0f;
         for (Float tv : fiveV) {
-            if (last > tv) lteNum++;
+            if (last > (tv + tv * sc)) lteNum++;
+
             last = tv;
         }
         scale = df.format((float) lteNum / vSize);
@@ -109,7 +127,7 @@ public class BaseApi {
         vSize = tenV.size();
         last = 0f;
         for (Float tv : tenV) {
-            if (last > tv) lteNum++;
+            if (last > (tv + tv * sc)) lteNum++;
             last = tv;
         }
         scale = df.format((float) lteNum / vSize);
@@ -119,7 +137,7 @@ public class BaseApi {
         vSize = tenfV.size();
         last = 0f;
         for (Float tv : tenfV) {
-            if (last > tv) lteNum++;
+            if (last > (tv + tv * sc)) lteNum++;
             last = tv;
         }
         scale = df.format((float) lteNum / vSize);
@@ -353,6 +371,7 @@ public class BaseApi {
             } else {
                 url = new URL(urlParam);
             }
+//            url=new URL("http://www.aigaogao.com/tools/history.html?s=601318"); todo good website
             con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             con.connect();
