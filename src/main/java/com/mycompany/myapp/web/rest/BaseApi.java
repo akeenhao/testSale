@@ -94,13 +94,21 @@ public class BaseApi {
                 e.printStackTrace();
             }
 
-            path = "http://q.stock.sohu.com/hisHq?code=cn_" + code + "&start=" + startDate + "&end=" + endDate + "&stat=1&order=D&period=d&callback=historySearchHandler&rt=jsonp";
+//            path = "http://q.stock.sohu.com/hisHq?code=cn_" + code + "&start=" + startDate + "&end=" + endDate + "&stat=1&order=D&period=d&callback=historySearchHandler&rt=jsonp";
             path = "http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh" + code + "&scale=60&ma=no&datalen=1023";
             logger.info("index:{} net path:{}", codes.indexOf(code), path);
 
             String str = sendGet(path, null, "GBK");
             logger.info("net res:{}", str);
-            if (org.apache.commons.lang.StringUtils.isBlank(str) || "null".equals(str)) continue;
+            if (org.apache.commons.lang.StringUtils.isBlank(str) || "null".equals(str)) {
+                path = "http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz" + code + "&scale=60&ma=no&datalen=1023";
+                logger.info("index:{} net path:{}", codes.indexOf(code), path);
+
+                str = sendGet(path, null, "GBK");
+                logger.info("net res:{}", str);
+                if (org.apache.commons.lang.StringUtils.isBlank(str) || "null".equals(str))
+                    continue;
+            }
 
             List<SingleBusi> singleBusiList = (List<SingleBusi>) JSONArray.parseArray(str, SingleBusi.class);
             if (singleBusiList.isEmpty()) continue;
